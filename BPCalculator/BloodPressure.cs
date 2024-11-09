@@ -32,9 +32,7 @@ namespace BPCalculator
             
             get
             {
-                // implement as part of project
-                //throw new NotImplementedException("not implemented yet");
-                return CalculateBPCategory();                       // replace this
+                return CalculateBPCategory();
             }
         }
 
@@ -59,6 +57,12 @@ namespace BPCalculator
                 return BPCategory.High;
             }
             return BPCategory.High;
+        }
+        // New feature - calculate pulse pressure -
+        // To calculate your pulse pressure, subtract the diastolic blood pressure from the systolic blood pressure
+        public int CalculatePulsePressure()
+        {
+            return Systolic - Diastolic;
         }
     }
 }
