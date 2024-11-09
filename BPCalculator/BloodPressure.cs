@@ -29,11 +29,76 @@ namespace BPCalculator
         // calculate BP category
         public BPCategory Category
         {
+            
             get
             {
                 // implement as part of project
                 //throw new NotImplementedException("not implemented yet");
-                return new BPCategory();                       // replace this
+                return CalculateBPCategory();                       // replace this
+            }
+        }
+
+        public BPCategory CalculateBPCategory()
+        {
+            BPCategory category = new BPCategory();
+            if (Systolic<90)
+            {
+                if(Diastolic< 60)
+                {
+                    category = BPCategory.Low;
+                    return category;
+                }
+                else if (Diastolic>=60 && Diastolic<80)
+                {
+                    category = BPCategory.Ideal;
+                    return category;
+                }
+                else if (Diastolic >= 80 && Diastolic < 90)
+                {
+                    category = BPCategory.PreHigh;
+                    return category;
+                }
+                else
+                {
+                    category = BPCategory.High;
+                    return category;
+                }
+            }
+            else if(Systolic>=90 && Systolic<120)
+            {
+                if (Diastolic >= 40 && Diastolic < 80)
+                {
+                    category = BPCategory.Ideal;
+                    return category;
+                }
+                else if (Diastolic >= 80 && Diastolic < 90)
+                {
+                    category = BPCategory.PreHigh;
+                    return category;
+                }
+                else
+                {
+                    category = BPCategory.High;
+                    return category;
+                }
+            }
+            else if(Systolic >= 120 && Systolic < 140)
+            {
+                if (Diastolic >= 40 && Diastolic < 90)
+                {
+                    category = BPCategory.PreHigh;
+                    return category;
+                }
+                else
+                {
+                    category = BPCategory.High;
+                    return category;
+                }
+            }
+            else
+            {
+                category = BPCategory.High;
+                return category;
             }
         }
     }
