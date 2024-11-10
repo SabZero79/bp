@@ -51,9 +51,9 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       run: |
-          dotnet sonarscanner begin /k:"your-sonarcloud-project-key" /o:"your-sonarcloud-organization" /d:sonar.login=$SONARCLOUD_SECRET
+          dotnet sonarscanner begin /k:"your-sonarcloud-project-key" /o:"your-sonarcloud-organization" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
           dotnet build
-          dotnet sonarscanner end /d:sonar.login=$SONARCLOUD_SECRET
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
 
     - name: Save SonarCloud Report to Text File
       run: |
