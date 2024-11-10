@@ -47,14 +47,23 @@ jobs:
     - name: Add .NET tools to PATH
       run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
     
-    - name: Run SonarCloud Code Analysis
+    - name: Run SonarCloud Code Analysis (Begin)
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       run: |
-          dotnet sonarscanner begin /k:"your-sonarcloud-project-key" /o:"your-sonarcloud-organization" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
-          dotnet build
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
+          echo "Starting SonarCloud analysis..."
+          dotnet sonarscanner begin /k:"your-sonarcloud-project-key" /o:"your-sonarcloud-organization" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" || exit 1
+          echo "SonarCloud analysis started successfully."
 
+    - name: Build Project (Required for SonarCloud)
+      run: dotnet build || exit 1
+
+    - name: Run SonarCloud Code Analysis (End)
+      env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
+      run: |
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" || exit 1
+          
     - name: Save SonarCloud Report to Text File
       run: |
           curl -u $SONAR_TOKEN: "https://sonarcloud.io/api/project_analyses/search?project=your-sonarcloud-project-key" > ./TestResults/sonar-report.txt
