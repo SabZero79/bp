@@ -29,6 +29,9 @@ jobs:
       
     - name: Build for Release
       run: dotnet build --configuration Release
+
+    - name: Create Test Results Directory
+      run: mkdir -p ./TestResults
       
     - name: Run Unit Tests and Save Plain Text Results
       run: |
