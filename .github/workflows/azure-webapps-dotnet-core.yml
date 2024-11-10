@@ -40,7 +40,14 @@ jobs:
     - name: Run BDD Tests and Save Plain Text Results
       run: |
           dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
-          
+
+    - name: Install SonarCloud Scanner for .NET
+      run: dotnet tool install --global dotnet-sonarscanner
+
+    - name: Add .NET tools to PATH
+      shell: bash
+      run: echo "::add-path::$HOME/.dotnet/tools"
+    
     - name: Run SonarCloud Code Analysis
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
