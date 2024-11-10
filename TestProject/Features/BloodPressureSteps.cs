@@ -7,7 +7,7 @@ namespace BPCalculator.Tests.Steps
     [Binding]
     public class BloodPressureSteps
     {
-        private BloodPressure BP;
+        public required BloodPressure BP;
         private BPCategory calculatedCategory;
 
         [Given(@"the systolic pressure is (.*)")]
