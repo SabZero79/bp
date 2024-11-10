@@ -35,7 +35,11 @@ jobs:
       
     - name: Run Unit Tests and Save Plain Text Results
       run: |
-          dotnet test --no-build --configuration Release > ./TestResults/unit-tests.txt
+          dotnet test --filter "Category=Unit" --no-build --configuration Release > ./TestResults/unit-tests.txt
+
+    - name: Run BDD Tests and Save Plain Text Results
+      run: |
+          dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
       
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
