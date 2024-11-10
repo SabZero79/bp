@@ -70,10 +70,11 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       run: |
+          New-Item -ItemType Directory -Path ./TestResults -Force
           $headers = @{
               Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${Env:SONAR_TOKEN}:"))
           }
-          Invoke-WebRequest -Uri "https://sonarcloud.io/api/project_analyses/search?project=SabZero79_bp" -Headers $headers -OutFile ./TestResults/sonar-report.txt
+          Invoke-WebRequest -Uri "https://sonarcloud.io/api/issues/search?componentKeys=SabZero79_bp" -Headers $headers -OutFile ./TestResults/sonar-report.txt
 
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
