@@ -1,4 +1,5 @@
-﻿Feature: Blood Pressure Category Calculation
+﻿@BDD
+Feature: Blood Pressure Category Calculation
     In order to categorize blood pressure correctly
     As a healthcare professional
     I want to see the blood pressure category based on systolic and diastolic values

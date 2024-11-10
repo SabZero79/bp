@@ -5,6 +5,7 @@ using TechTalk.SpecFlow;
 namespace BPCalculator.Tests.Steps
 {
     [Binding]
+    [Category("BDD")]
     public class BloodPressureSteps
     {
         public required BloodPressure BP;

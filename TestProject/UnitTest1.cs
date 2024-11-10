@@ -1,6 +1,7 @@
 using BPCalculator;
 namespace TestProject
 {
+    [Category("Unit")]
     public class BloodPressureTests
     {
         public required BloodPressure BP;
