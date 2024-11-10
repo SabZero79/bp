@@ -40,6 +40,19 @@ jobs:
     - name: Run BDD Tests and Save Plain Text Results
       run: |
           dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
+          
+    - name: Run SonarCloud Code Analysis
+      env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
+      run: |
+          dotnet sonarscanner begin /k:"your-sonarcloud-project-key" /o:"your-sonarcloud-organization" /d:sonar.login=$SONARCLOUD_SECRET
+          dotnet build
+          dotnet sonarscanner end /d:sonar.login=$SONARCLOUD_SECRET
+
+    - name: Save SonarCloud Report to Text File
+      run: |
+          curl -u $SONAR_TOKEN: "https://sonarcloud.io/api/project_analyses/search?project=your-sonarcloud-project-key" > ./TestResults/sonar-report.txt
+
       
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
