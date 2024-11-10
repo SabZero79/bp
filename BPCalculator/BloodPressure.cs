@@ -36,6 +36,7 @@ namespace BPCalculator
             }
         }
 
+        // Main logic of how to calculate the blood pressure categories
         public BPCategory CalculateBPCategory()
         {
             if (Systolic < 90)

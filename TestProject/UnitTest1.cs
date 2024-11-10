@@ -3,7 +3,7 @@ namespace TestProject
 {
     public class BloodPressureTests
     {
-        private BloodPressure BP;
+        public required BloodPressure BP;
 
         [SetUp]
         public void SetUp()
