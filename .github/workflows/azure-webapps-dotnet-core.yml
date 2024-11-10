@@ -50,9 +50,13 @@ jobs:
     - name: Run SonarCloud Code Analysis (Begin)
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
+      shell: bash
       run: |
           echo "Starting SonarCloud analysis..."
-          dotnet sonarscanner begin /k:"your-sonarcloud-project-key" /o:"your-sonarcloud-organization" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" || exit 1
+          if ! dotnet sonarscanner begin /k:"your-sonarcloud-project-key" /o:"your-sonarcloud-organization" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"; then
+            echo "SonarCloud analysis failed to start."
+            exit 1
+          fi
           echo "SonarCloud analysis started successfully."
 
     - name: Build Project (Required for SonarCloud)
@@ -61,8 +65,12 @@ jobs:
     - name: Run SonarCloud Code Analysis (End)
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
+      shell: bash
       run: |
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" || exit 1
+          if ! dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"; then
+            echo "SonarCloud analysis end step failed."
+            exit 1
+          fi
           
     - name: Save SonarCloud Report to Text File
       run: |
