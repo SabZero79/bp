@@ -53,7 +53,7 @@ jobs:
       shell: bash
       run: |
           echo "Starting SonarCloud analysis..."
-          if ! dotnet sonarscanner begin /k:sabzero79 /o:Sabi_Varga /d:sonar.login='${{ secrets.SONARCLOUD_SECRET }}'; then
+          if ! dotnet sonarscanner begin /k=sabzero79 /o=Sabi_Varga /d=sonar.login='${{ secrets.SONARCLOUD_SECRET }}'; then
             echo "SonarCloud analysis failed to start."
             exit 1
           fi
