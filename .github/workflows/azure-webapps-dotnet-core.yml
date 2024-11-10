@@ -33,10 +33,6 @@ jobs:
     - name: Run Unit Tests
       run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=unit-tests.trx" --results-directory ./TestResults
       
-    - name: Run BDD Tests
-      run: |
-        dotnet test --filter "Category=BDD" --no-build --configuration Release --logger "trx;LogFileName=bdd-tests.trx" --results-directory ./TestResults
-
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -44,13 +40,6 @@ jobs:
           path: ./TestResults
           retention-days: 7
 
-    - name: Upload Test Coverage Report as Artifacts
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-          name: CodeCoverage
-          path: ./TestResults/Coverage
-          retention-days: 7
     #- name: Run unit tests
     # run: dotnet test bmiUnitTestProject/bmiUnitTestProject.csproj --collect "Code coverage" -l:trx
    
