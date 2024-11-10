@@ -61,9 +61,9 @@ namespace BPCalculator
         }
         // New feature - calculate pulse pressure -
         // To calculate your pulse pressure, subtract the diastolic blood pressure from the systolic blood pressure
-        public int CalculatePulsePressure()
-        {
-            return Systolic - Diastolic;
-        }
+        //public int CalculatePulsePressure()
+        //{
+        //    return Systolic - Diastolic;
+        //}
     }
 }

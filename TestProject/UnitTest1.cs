@@ -51,20 +51,20 @@ namespace TestProject
             Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
         }
 
-        [Test]
-        public void CalculatePulsePressure_ShouldReturnCorrectValue()
-        {
-            BP.Systolic = 120;
-            BP.Diastolic = 80;
-            Assert.That(BP.CalculatePulsePressure(), Is.EqualTo(40));
-        }
+        //[Test]
+        //public void CalculatePulsePressure_ShouldReturnCorrectValue()
+        //{
+        //    BP.Systolic = 120;
+        //    BP.Diastolic = 80;
+        //    Assert.That(BP.CalculatePulsePressure(), Is.EqualTo(40));
+        //}
 
-        [Test]
-        public void CalculatePulsePressure_HandlesLowValues()
-        {
-            BP.Systolic = 70;
-            BP.Diastolic = 40;
-            Assert.That(BP.CalculatePulsePressure(), Is.EqualTo(30));
-        }
+        //[Test]
+        //public void CalculatePulsePressure_HandlesLowValues()
+        //{
+        //    BP.Systolic = 70;
+        //    BP.Diastolic = 40;
+        //    Assert.That(BP.CalculatePulsePressure(), Is.EqualTo(30));
+        //}
     }
 }
