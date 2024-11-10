@@ -45,32 +45,25 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Add .NET tools to PATH
-      run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      shell: powershell
+      run: echo "$Env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8
     
     - name: Run SonarCloud Code Analysis (Begin)
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: bash
+      shell: powershell
       run: |
-          echo "Starting SonarCloud analysis..."
-          if ! dotnet sonarscanner begin /k=sabzero79 /o=Sabi_Varga /d=sonar.login='${{ secrets.SONARCLOUD_SECRET }}'; then
-            echo "SonarCloud analysis failed to start."
-            exit 1
-          fi
-          echo "SonarCloud analysis started successfully."
+          dotnet sonarscanner begin /k:"sabzero79" /o:"Sabi_Varga" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
 
-    - name: Build Project (Required for SonarCloud)
-      run: dotnet build || exit 1
+    - name: Build Project
+      shell: powershell
+      run: dotnet build
 
     - name: Run SonarCloud Code Analysis (End)
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: bash
-      run: |
-          if ! dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"; then
-            echo "SonarCloud analysis end step failed."
-            exit 1
-          fi
+      shell: powershell
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
           
     - name: Save SonarCloud Report to Text File
       run: |
