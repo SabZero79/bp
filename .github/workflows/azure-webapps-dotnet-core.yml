@@ -30,8 +30,9 @@ jobs:
     - name: Build for Release
       run: dotnet build --configuration Release
       
-    - name: Run Unit Tests
-      run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=unit-tests.trx" --results-directory ./TestResults
+    - name: Run Unit Tests and Save Plain Text Results
+      run: |
+          dotnet test --no-build --configuration Release > ./TestResults/unit-tests.txt
       
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
