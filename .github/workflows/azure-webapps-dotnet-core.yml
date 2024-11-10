@@ -81,8 +81,7 @@ jobs:
               "File: $($_.component)",
               "Line: $($_.line)",
               "Message: $($_.message)",
-              "Rule: https://rules.sonarsource.com/csharp/$_('rule')",
-              "`n"
+              "`n"    
           }
           
           # Save the formatted output to a file
