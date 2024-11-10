@@ -70,11 +70,23 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       run: |
-          New-Item -ItemType Directory -Path ./TestResults -Force
+          # Set up headers and make the API call
           $headers = @{
               Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${Env:SONAR_TOKEN}:"))
           }
-          Invoke-WebRequest -Uri "https://sonarcloud.io/api/issues/search?componentKeys=SabZero79_bp" -Headers $headers -OutFile ./TestResults/sonar-report.txt
+          $response = Invoke-WebRequest -Uri "https://sonarcloud.io/api/issues/search?componentKeys=SabZero79_bp" -Headers $headers
+          
+          # Parse JSON and select relevant fields
+          $issues = ($response.Content | ConvertFrom-Json).issues | ForEach-Object {
+              "File: $($_.component)",
+              "Line: $($_.line)",
+              "Message: $($_.message)",
+              "Rule: https://rules.sonarsource.com/csharp/$_('rule')",
+              "`n"
+          }
+          
+          # Save the formatted output to a file
+          $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
 
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
