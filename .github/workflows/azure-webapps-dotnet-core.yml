@@ -59,7 +59,6 @@ jobs:
       run: |
           curl -u $SONAR_TOKEN: "https://sonarcloud.io/api/project_analyses/search?project=your-sonarcloud-project-key" > ./TestResults/sonar-report.txt
 
-      
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
