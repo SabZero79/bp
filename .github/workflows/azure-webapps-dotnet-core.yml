@@ -53,7 +53,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
       run: |
-          dotnet sonarscanner begin /k:"sabzero79" /o:"Sabi_Varga" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
+          dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
 
     - name: Build Project
       shell: powershell
