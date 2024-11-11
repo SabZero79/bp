@@ -51,13 +51,20 @@ jobs:
     - name: Convert SARIF to Plain Text Report
       shell: powershell
       run: |
-        $sarifFilePath = "./TestResults/codeql-report.sarif" # Path to SARIF file
-        $outputFilePath = "./TestResults/codeql-report.txt"
+        $sarifFilePath = "./TestResults/codeql-report.sarif"  # Ensure correct SARIF path
+        $outputFilePath = "./TestResults/codeql-results.txt"   # Define plain text output file path
         
+        # Set read permissions on the SARIF file if needed
+        icacls $sarifFilePath /grant:r "$($env:USERNAME):(R)" > $null
+
         # Check if SARIF file exists
         if (Test-Path -Path $sarifFilePath) {
-          # Parse SARIF JSON and extract relevant information
-          $sarifContent = Get-Content -Path $sarifFilePath | ConvertFrom-Json
+          # Attempt to copy SARIF file to avoid permission issues
+          $tempSarifPath = "./TestResults/temp-codeql-report.sarif"
+          Copy-Item -Path $sarifFilePath -Destination $tempSarifPath -Force
+          
+          # Parse SARIF JSON from the copied file and extract relevant information
+          $sarifContent = Get-Content -Path $tempSarifPath | ConvertFrom-Json
           $report = @()
           
           foreach ($run in $sarifContent.runs) {
@@ -72,8 +79,9 @@ jobs:
           
           # Write report to plain text file
           $report | Out-File -FilePath $outputFilePath -Encoding utf8
+          Write-Host "Plain text report generated at $outputFilePath"
         } else {
-          Write-Host "SARIF file not found!"
+          Write-Host "SARIF file not found at $sarifFilePath!"
         }
       
     - name: Upload Test Results as Artifacts
