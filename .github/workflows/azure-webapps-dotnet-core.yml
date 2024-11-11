@@ -87,6 +87,22 @@ jobs:
           # Save the formatted output to a file
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
 
+    - name: Install Snyk CLI
+      run: npm install -g snyk
+
+    - name: Run Snyk Vulnerability Scan
+      env:
+          SNYK_TOKEN: ${{ secrets.SNYK_SECRET }}
+      run: |
+          # Run Snyk test and output results to a plain-text file
+          snyk test --json | ConvertFrom-Json | ForEach-Object {
+            "Package: $($_.package)"
+            "Severity: $($_.severity)"
+            "Title: $($_.title)"
+            "URL: $($_.url)"
+            "`n"
+          } | Out-File -FilePath ./TestResults/snyk-report.txt -Encoding utf8
+    
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
