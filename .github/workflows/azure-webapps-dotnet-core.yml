@@ -36,6 +36,9 @@ jobs:
     - name: Install Snyk CLI
       run: npm install -g snyk
 
+    - name: Publish Dependencies for Snyk
+      run: dotnet publish -c Release --output ./output
+
     - name: Run Snyk Vulnerability Scan
       env:
           SNYK_TOKEN: ${{ secrets.SNYK_SECRET }}
