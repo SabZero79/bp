@@ -39,6 +39,9 @@ jobs:
       with:
         languages: 'csharp'  # Specify languages as needed
 
+    - name: Build the project for CodeQL analysis
+      run: dotnet build --configuration Release
+      
     - name: Perform CodeQL Analysis
       id: codeql-analysis  # Set an ID to reference the results
       uses: github/codeql-action/analyze@v2
