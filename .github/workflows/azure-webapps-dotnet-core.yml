@@ -1,78 +1,55 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: BloodPressure_SABI                                   # "BMI_CI" workflow, name is optional
+name: BloodPressure_SABI
 
 env:
-  AZURE_WEBAPP_NAME: BloodPressureApp                  # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: 'publish'              # set this to the path to your web app project
+  AZURE_WEBAPP_NAME: BloodPressureApp
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'
 
 on:
- workflow_dispatch:        
-# push:                                             #  workflow_dispatch for manually triggered
-#   branches: [ master ]
- 
+  workflow_dispatch:        
 
 jobs:
-  build:                                            # "build" job
-    runs-on: windows-latest                         # runner
+  build:
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
-        
+
     - name: Install dependencies
       run: dotnet restore
-      
-    - name: Build for Release
-      run: dotnet build --configuration Release
 
-    - name: Create Test Results Directory
-      run: mkdir -p ./TestResults
-      
-    # Run CodeQL  Dependency-Check
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
-        languages: 'csharp'  # Specify languages as needed
+        languages: 'csharp'
 
+    # Use CodeQL to monitor the build
     - name: Build the project for CodeQL analysis
       run: dotnet build --configuration Release
-      
+      env:
+        CODEQL_EXTRACTOR_CSHARP_TRACING: 'true'  # Enables verbose output for troubleshooting
+
     - name: Perform CodeQL Analysis
-      id: codeql-analysis  # Set an ID to reference the results
       uses: github/codeql-action/analyze@v2
       with:
-        output: './TestResults/codeql-report'  # Define a folder to save the report
-        
+        output: './TestResults/codeql-report'
+
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
-          name: TestResults
-          path: ./TestResults
-          retention-days: 7
-
-    #- name: Run unit tests
-    # run: dotnet test bmiUnitTestProject/bmiUnitTestProject.csproj --collect "Code coverage" -l:trx
-   
-    #- name: Publish Unit Test Results
-     # uses: dorny/test-reporter@v1
-     # with:
-      #  artifact: ''
-      #  name: MS Tests                  
-      #  path: '**.trx'
-      #  reporter: 'dotnet-trx'                     
+        name: TestResults
+        path: ./TestResults
+        retention-days: 7
 
     - name: Publish
-      run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
+      run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
 
-# Deploy to Azure Web apps
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
       with: 
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}                        # your app name
-        publish-profile: ${{ secrets.AZURE_SECRET  }} # Define secret variable in repository settings as per action documentation
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_SECRET }}
         package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
