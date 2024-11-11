@@ -22,7 +22,7 @@ jobs:
       run: dotnet restore
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@main
       with:
         languages: 'csharp'
 
@@ -33,7 +33,7 @@ jobs:
         CODEQL_EXTRACTOR_CSHARP_TRACING: 'true'  # Enables verbose output for troubleshooting
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@main
       with:
         output: './TestResults/codeql-report'
 
