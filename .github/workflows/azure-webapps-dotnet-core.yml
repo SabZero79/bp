@@ -33,51 +33,38 @@ jobs:
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
       
-    - name: Install Snyk CLI
-      run: npm install -g snyk
+    # Run OWASP Dependency-Check
+    - name: Run OWASP Dependency-Check
+      uses: dependency-check/dependency-check-action@v4
+      with:
+        format: "ALL"                            # Generate all supported report formats
+        project: "BloodPressureApp"              # Name of your project for the report
+        scan: "./"                               # Path to scan for dependencies
+        out: "./TestResults"                     # Output directory for reports
 
-    - name: Publish Dependencies for Snyk
-      run: dotnet publish -c Release --output ./output
-
-    - name: Run Snyk Vulnerability Scan
-      env:
-          SNYK_TOKEN: ${{ secrets.SNYK_SECRET }}
-      shell: powershell
+    # Convert HTML or XML report to plain text (optional)
+    - name: Convert OWASP Dependency-Check Report to Plain Text
+      shell: pwsh
       run: |
-          # Ignore non-terminating errors and continue processing
-          $ErrorActionPreference = "Continue"
-
-          # Create TestResults folder if it doesn't exist
-          New-Item -ItemType Directory -Path ./TestResults -Force
-
-          Write-Output "Running Snyk test on .csproj file..."
-          $snykOutput = & { snyk test ./BPCalculator.csproj --json }
-
-          # Debug: Print raw JSON to GitHub Actions log for inspection
-          Write-Output "Raw Snyk JSON output:"
-          Write-Output $snykOutput
-
-          # Check for issues and parse JSON if there are any
-          if ($snykOutput) {
-            Write-Output "Snyk scan completed with issues. Parsing output..."
-
-            # Parse JSON and format output for each issue
-            $parsedIssues = $snykOutput | ConvertFrom-Json | ForEach-Object {
-              "Package: $($_.package)"
-              "Severity: $($_.severity)"
-              "Title: $($_.title)"
-              "URL: https://snyk.io/vuln/$($_.id)"
+        $xmlPath = "./TestResults/dependency-check-report.xml"
+        $txtPath = "./TestResults/dependency-check-report.txt"
+        if (Test-Path $xmlPath) {
+          [xml]$report = Get-Content $xmlPath
+          $issues = $report.dependencyCheck.report.dependencies.dependency | ForEach-Object {
+            "File: $($_.fileName)"
+            "Vulnerabilities: "
+            $_.vulnerabilities.vulnerability | ForEach-Object {
+              "  - Name: $($_.name)"
+              "    Severity: $($_.severity)"
+              "    Description: $($_.description)"
               "`n"
             }
-            $parsedIssues -join "`n" | Out-File -FilePath ./TestResults/snyk-report.txt -Encoding utf8
-          } else {
-            Write-Output "No vulnerabilities found."
-            "No vulnerabilities found." | Out-File -FilePath ./TestResults/snyk-report.txt -Encoding utf8
           }
-
-          # Override exit code to ensure GitHub Actions treats this step as successful
-          exit 0
-    
+          $issues -join "`n" | Out-File -FilePath $txtPath -Encoding utf8
+        } else {
+          "No vulnerabilities found." | Out-File -FilePath $txtPath -Encoding utf8
+        }
+        
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
