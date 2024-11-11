@@ -35,7 +35,7 @@ jobs:
       
     # Run OWASP Dependency-Check
     - name: Run OWASP Dependency-Check
-      uses: dependency-check/dependency-check-action@v4
+      uses: dependency-check/dependency-check-action@main
       with:
         format: "ALL"                            # Generate all supported report formats
         project: "BloodPressureApp"              # Name of your project for the report
