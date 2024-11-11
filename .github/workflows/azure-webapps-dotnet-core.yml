@@ -37,6 +37,35 @@ jobs:
       with:
         output: './TestResults/codeql-report'
 
+     #Additional steps after CodeQL analysis to convert SARIF to plain text
+    - name: Convert SARIF to Plain Text Report
+      shell: powershell
+      run: |
+        $sarifFilePath = "./TestResults/codeql-results.sarif" # Path to SARIF file
+        $outputFilePath = "./TestResults/codeql-results.txt"
+        
+        # Check if SARIF file exists
+        if (Test-Path -Path $sarifFilePath) {
+          # Parse SARIF JSON and extract relevant information
+          $sarifContent = Get-Content -Path $sarifFilePath | ConvertFrom-Json
+          $report = @()
+          
+          foreach ($run in $sarifContent.runs) {
+            foreach ($result in $run.results) {
+              $message = $result.message.text
+              $level = $result.level
+              $fileLocation = $result.locations[0].physicalLocation.artifactLocation.uri
+              $line = $result.locations[0].physicalLocation.region.startLine
+              $report += "[$level] $fileLocation (Line $line): $message"
+            }
+          }
+          
+          # Write report to plain text file
+          $report | Out-File -FilePath $outputFilePath -Encoding utf8
+        } else {
+          Write-Host "SARIF file not found!"
+        }
+      
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
