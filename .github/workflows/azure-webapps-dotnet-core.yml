@@ -56,23 +56,29 @@ jobs:
 
         # Check if SARIF file exists
         if (Test-Path -Path $sarifFilePath) {
-          # Bypass permission issues using Invoke-RestMethod to read SARIF content
-          $sarifContent = Invoke-RestMethod -Uri ("file://" + (Resolve-Path -Path $sarifFilePath).Path) -UseBasicParsing
-          $report = @()
+          try {
+            # Use .NET StreamReader to read the SARIF content
+            $sarifJson = [System.IO.File]::ReadAllText((Resolve-Path -Path $sarifFilePath).Path)
+            $sarifContent = $sarifJson | ConvertFrom-Json
+            $report = @()
 
-          foreach ($run in $sarifContent.runs) {
-            foreach ($result in $run.results) {
-              $message = $result.message.text
-              $level = $result.level
-              $fileLocation = $result.locations[0].physicalLocation.artifactLocation.uri
-              $line = $result.locations[0].physicalLocation.region.startLine
-              $report += "[$level] $fileLocation (Line $line): $message"
+            foreach ($run in $sarifContent.runs) {
+              foreach ($result in $run.results) {
+                $message = $result.message.text
+                $level = $result.level
+                $fileLocation = $result.locations[0].physicalLocation.artifactLocation.uri
+                $line = $result.locations[0].physicalLocation.region.startLine
+                $report += "[$level] $fileLocation (Line $line): $message"
+              }
             }
+
+            # Write report to plain text file
+            $report | Out-File -FilePath $outputFilePath -Encoding utf8
+            Write-Host "Plain text report generated at $outputFilePath"
           }
-          
-          # Write report to plain text file
-          $report | Out-File -FilePath $outputFilePath -Encoding utf8
-          Write-Host "Plain text report generated at $outputFilePath"
+          catch {
+            Write-Host "Failed to read SARIF file: $_"
+          }
         } else {
           Write-Host "SARIF file not found at $sarifFilePath!"
         }
