@@ -81,6 +81,12 @@ jobs:
           }
         } else {
           Write-Host "SARIF file not found at $sarifFilePath!"
+
+        # Diagnostic step to verify if the plain text file was created
+        if (Test-Path -Path $outputFilePath) {
+          Write-Host "Plain text file was successfully created."
+        } else {
+          Write-Host "Plain text file was NOT created as expected."
         }
         
     # Upload the plain text report as an artifact
