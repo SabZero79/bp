@@ -47,9 +47,8 @@ jobs:
           # Create TestResults folder if it doesn't exist
           New-Item -ItemType Directory -Path ./TestResults -Force
 
-          # Run Snyk test and capture JSON output
-          Write-Output "Running Snyk test..."
-          $snykOutput = & { snyk test --json }
+          Write-Output "Running Snyk test on .csproj file..."
+          $snykOutput = & { snyk test path/to/your/project.csproj --json }
 
           # Debug: Print raw JSON to GitHub Actions log for inspection
           Write-Output "Raw Snyk JSON output:"
