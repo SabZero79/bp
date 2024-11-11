@@ -96,7 +96,7 @@ jobs:
       shell: powershell
       run: |
           # Run Snyk test and handle errors
-          $snykOutput = snyk test --json
+          $snykOutput = snyk test --json -ErrorAction Continue
           if ($LASTEXITCODE -ne 0) {
             Write-Output "Snyk scan completed with issues. Parsing output..."
 
