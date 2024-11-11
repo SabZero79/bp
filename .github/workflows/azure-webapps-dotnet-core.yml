@@ -49,7 +49,11 @@ jobs:
 
           # Run Snyk test and capture JSON output
           Write-Output "Running Snyk test..."
-          $snykOutput = & { snyk test --json } 
+          $snykOutput = & { snyk test --json }
+
+          # Debug: Print raw JSON to GitHub Actions log for inspection
+          Write-Output "Raw Snyk JSON output:"
+          Write-Output $snykOutput
 
           # Check for issues and parse JSON if there are any
           if ($snykOutput) {
