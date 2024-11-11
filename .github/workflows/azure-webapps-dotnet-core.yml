@@ -35,14 +35,24 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@main
       with:
-        output: './TestResults/codeql-report'
-
+        output: './TestResults/codeql-report.sarif'
+        
+    # Add a diagnostic check for the SARIF file
+    - name: Check SARIF File Exists
+      shell: pwsh
+      run: |
+        if (Test-Path -Path "./TestResults/codeql-report.sarif") {
+          Write-Host "SARIF file exists."
+        } else {
+          Write-Host "SARIF file not found at expected location."
+        }
+        
      #Additional steps after CodeQL analysis to convert SARIF to plain text
     - name: Convert SARIF to Plain Text Report
       shell: powershell
       run: |
-        $sarifFilePath = "./TestResults/codeql-results.sarif" # Path to SARIF file
-        $outputFilePath = "./TestResults/codeql-results.txt"
+        $sarifFilePath = "./TestResults/codeql-report.sarif" # Path to SARIF file
+        $outputFilePath = "./TestResults/codeql-report.txt"
         
         # Check if SARIF file exists
         if (Test-Path -Path $sarifFilePath) {
