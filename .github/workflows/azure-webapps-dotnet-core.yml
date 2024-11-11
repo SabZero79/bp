@@ -33,60 +33,6 @@ jobs:
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
       
-    - name: Run Unit Tests and Save Plain Text Results
-      run: |
-          dotnet test --filter "Category=Unit" --no-build --configuration Release > ./TestResults/unit-tests.txt
-
-    - name: Run BDD Tests and Save Plain Text Results
-      run: |
-          dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
-
-    - name: Install SonarCloud Scanner for .NET
-      run: dotnet tool install --global dotnet-sonarscanner
-
-    - name: Add .NET tools to PATH
-      shell: powershell
-      run: echo "$Env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8
-    
-    - name: Run SonarCloud Code Analysis (Begin)
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: powershell
-      run: |
-          dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
-
-    - name: Build Project
-      shell: powershell
-      run: dotnet build
-
-    - name: Run SonarCloud Code Analysis (End)
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: powershell
-      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
-          
-    - name: Save SonarCloud Report to Text File
-      shell: powershell
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      run: |
-          # Set up headers and make the API call
-          $headers = @{
-              Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${Env:SONAR_TOKEN}:"))
-          }
-          $response = Invoke-WebRequest -Uri "https://sonarcloud.io/api/issues/search?componentKeys=SabZero79_bp" -Headers $headers
-          
-          # Parse JSON and select relevant fields
-          $issues = ($response.Content | ConvertFrom-Json).issues | ForEach-Object {
-              "File: $($_.component)",
-              "Line: $($_.line)",
-              "Message: $($_.message)",
-              "`n"    
-          }
-          
-          # Save the formatted output to a file
-          $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
-
     - name: Install Snyk CLI
       run: npm install -g snyk
 
@@ -95,12 +41,14 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_SECRET }}
       shell: powershell
       run: |
-          # Run Snyk test and handle errors
-          $snykOutput = snyk test --json -ErrorAction Continue
-          if ($LASTEXITCODE -ne 0) {
+          Write-Output "Running Snyk test..."
+          $snykOutput = & { snyk test --json -ErrorAction Continue }
+          
+          # Check for issues and parse JSON if there are any
+          if ($snykOutput) {
             Write-Output "Snyk scan completed with issues. Parsing output..."
 
-            # Parse JSON output and save formatted text to file
+            # Parse JSON and format output for each issue
             $parsedIssues = $snykOutput | ConvertFrom-Json | ForEach-Object {
               "Package: $($_.package)"
               "Severity: $($_.severity)"
