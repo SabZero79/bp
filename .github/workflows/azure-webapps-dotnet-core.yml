@@ -80,7 +80,7 @@ jobs:
             Write-Host "Failed to read SARIF file: $_"
           }
         } else {
-          Write-Host "SARIF file not found at $sarifFilePath!"
+          Write-Host "SARIF file not found at $sarifFilePath!"}
 
         # Diagnostic step to verify if the plain text file was created
         if (Test-Path -Path $outputFilePath) {
