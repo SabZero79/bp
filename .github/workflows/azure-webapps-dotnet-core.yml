@@ -33,37 +33,17 @@ jobs:
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
       
-    # Run OWASP Dependency-Check
-    - name: Run OWASP Dependency-Check
-      uses: dependency-check/Dependency-Check_Action@main
+    # Run CodeQL  Dependency-Check
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
       with:
-        format: "ALL"                            # Generate all supported report formats
-        project: "BloodPressureApp"              # Name of your project for the report
-        scan: "./"                               # Path to scan for dependencies
-        out: "./TestResults"                     # Output directory for reports
+        languages: 'csharp'  # Specify languages as needed
 
-    # Convert HTML or XML report to plain text (optional)
-    - name: Convert OWASP Dependency-Check Report to Plain Text
-      shell: pwsh
-      run: |
-        $xmlPath = "./TestResults/dependency-check-report.xml"
-        $txtPath = "./TestResults/dependency-check-report.txt"
-        if (Test-Path $xmlPath) {
-          [xml]$report = Get-Content $xmlPath
-          $issues = $report.dependencyCheck.report.dependencies.dependency | ForEach-Object {
-            "File: $($_.fileName)"
-            "Vulnerabilities: "
-            $_.vulnerabilities.vulnerability | ForEach-Object {
-              "  - Name: $($_.name)"
-              "    Severity: $($_.severity)"
-              "    Description: $($_.description)"
-              "`n"
-            }
-          }
-          $issues -join "`n" | Out-File -FilePath $txtPath -Encoding utf8
-        } else {
-          "No vulnerabilities found." | Out-File -FilePath $txtPath -Encoding utf8
-        }
+    - name: Perform CodeQL Analysis
+      id: codeql-analysis  # Set an ID to reference the results
+      uses: github/codeql-action/analyze@v2
+      with:
+        output: './TestResults/codeql-report'  # Define a folder to save the report
         
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
