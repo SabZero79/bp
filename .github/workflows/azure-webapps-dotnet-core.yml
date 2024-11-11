@@ -41,9 +41,16 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_SECRET }}
       shell: powershell
       run: |
+          # Ignore non-terminating errors and continue processing
+          $ErrorActionPreference = "Continue"
+
+          # Create TestResults folder if it doesn't exist
+          New-Item -ItemType Directory -Path ./TestResults -Force
+
+          # Run Snyk test and capture JSON output
           Write-Output "Running Snyk test..."
-          $snykOutput = & { snyk test --json -ErrorAction Continue }
-          
+          $snykOutput = & { snyk test --json } 
+
           # Check for issues and parse JSON if there are any
           if ($snykOutput) {
             Write-Output "Snyk scan completed with issues. Parsing output..."
