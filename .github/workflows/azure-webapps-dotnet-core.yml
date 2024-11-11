@@ -93,15 +93,26 @@ jobs:
     - name: Run Snyk Vulnerability Scan
       env:
           SNYK_TOKEN: ${{ secrets.SNYK_SECRET }}
+      shell: powershell
       run: |
-          # Run Snyk test and output results to a plain-text file
-          snyk test --json | ConvertFrom-Json | ForEach-Object {
-            "Package: $($_.package)"
-            "Severity: $($_.severity)"
-            "Title: $($_.title)"
-            "URL: $($_.url)"
-            "`n"
-          } | Out-File -FilePath ./TestResults/snyk-report.txt -Encoding utf8
+          # Run Snyk test and handle errors
+          $snykOutput = snyk test --json
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "Snyk scan completed with issues. Parsing output..."
+
+            # Parse JSON output and save formatted text to file
+            $parsedIssues = $snykOutput | ConvertFrom-Json | ForEach-Object {
+              "Package: $($_.package)"
+              "Severity: $($_.severity)"
+              "Title: $($_.title)"
+              "URL: https://snyk.io/vuln/$($_.id)"
+              "`n"
+            }
+            $parsedIssues -join "`n" | Out-File -FilePath ./TestResults/snyk-report.txt -Encoding utf8
+          } else {
+            Write-Output "No vulnerabilities found."
+            "No vulnerabilities found." | Out-File -FilePath ./TestResults/snyk-report.txt -Encoding utf8
+          }
     
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
