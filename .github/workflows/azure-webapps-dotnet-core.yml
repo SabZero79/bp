@@ -82,12 +82,14 @@ jobs:
         } else {
           Write-Host "SARIF file not found at $sarifFilePath!"
         }
-      
-    - name: Upload Test Results as Artifacts
+        
+    # Upload the plain text report as an artifact
+    - name: Upload Plain Text CodeQL Report
+      if: always()
       uses: actions/upload-artifact@v3
       with:
-        name: TestResults
-        path: ./TestResults
+        name: PlainText-CodeQL-Report
+        path: ./TestResults/codeql-results.txt
         retention-days: 7
 
     - name: Publish
