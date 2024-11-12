@@ -84,21 +84,43 @@ jobs:
           # Save the formatted output to a file
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
 
-    
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
           name: TestResults
           path: ./TestResults
-          retention-days: 7                
+          retention-days: 7
+          
+  dependency_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Publish
-      run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'BMI'
+          path: '.'
+          format: 'HTML'    
+          args: >
+            --failOnCVSS 8            
+          # fail if CVSS score (CVE scoring system) is High >=8
+          
+      - name: Upload Test results
+        uses: actions/upload-artifact@v4
+        with:
+           name: Depcheck report
+           path: ./TestResults
+
+      - name: Publish
+        run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
 
 # Deploy to Azure Web apps
-    - name: Run Azure webapp deploy action using publish profile credentials
-      uses: azure/webapps-deploy@v2
-      with: 
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}                        # your app name
-        publish-profile: ${{ secrets.AZURE_SECRET  }} # Define secret variable in repository settings as per action documentation
-        package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+      - name: Run Azure webapp deploy action using publish profile credentials
+        uses: azure/webapps-deploy@v2
+        with: 
+            app-name: ${{ env.AZURE_WEBAPP_NAME }}                        # your app name
+            publish-profile: ${{ secrets.AZURE_SECRET  }} # Define secret variable in repository settings as per action documentation
+            package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
