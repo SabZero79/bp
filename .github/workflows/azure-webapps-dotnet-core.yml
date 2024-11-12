@@ -32,11 +32,11 @@ jobs:
       
     - name: Run Unit Tests and Save Plain Text Results
       run: |
-          dotnet test --filter "Category=Unit" --no-build --configuration Release > ./TestResults/unit-tests.txt
+          dotnet test --filter "Category=Unit" --no-build --configuration Release --collect "Code coverage"  > ${{github.workspace}}/reports/unit-tests.txt
 
     - name: Run BDD Tests and Save Plain Text Results
       run: |
-          dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
+          dotnet test --filter "Category=BDD" --no-build --configuration Release > ${{github.workspace}}/reports/bdd-tests.txt
 
     - name: Install SonarCloud Scanner for .NET
       run: dotnet tool install --global dotnet-sonarscanner
@@ -82,13 +82,13 @@ jobs:
           }
           
           # Save the formatted output to a file
-          $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
+          $issues -join "`n" | Out-File -FilePath ${{github.workspace}}/reports/sonar-report.txt -Encoding utf8
 
     - name: Upload Test Results as Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
           name: TestResults
-          path: ./TestResults
+          path: ${{github.workspace}}/reports
           retention-days: 7
           
   dependency_check:
@@ -112,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
            name: Depcheck report
-           path: ./TestResults
+           path: ${{github.workspace}}/reports
 
       - name: Publish
         run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
