@@ -82,7 +82,7 @@ jobs:
           }
           
           # Save the formatted output to a file
-          $issues -join "`n" | Out-File -FilePath ${{github.workspace}}/reports/sonar-report.txt -Encoding utf8
+          $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
 
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v4
