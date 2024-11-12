@@ -1,109 +1,104 @@
-name: BloodPressure_SABI
+name: BloodPressure_SABI                                  
 
 env:
-  AZURE_WEBAPP_NAME: BloodPressureApp
-  AZURE_WEBAPP_PACKAGE_PATH: 'publish'
+  AZURE_WEBAPP_NAME: BloodPressureApp               # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'              
 
 on:
-  workflow_dispatch:        
+ workflow_dispatch:        
+# push:                                             #  workflow_dispatch for manually triggered
+#   branches: [ master ]
+ 
 
 jobs:
-  build:
-    runs-on: windows-latest
+  pipeline:                                         
+    runs-on: windows-latest                         # runner
     steps:
     - uses: actions/checkout@v4
-
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
-
+        
     - name: Install dependencies
       run: dotnet restore
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@main
-      with:
-        languages: 'csharp'
-
-    # Use CodeQL to monitor the build
-    - name: Build the project for CodeQL analysis
+      
+    - name: Build for Release
       run: dotnet build --configuration Release
-      env:
-        CODEQL_EXTRACTOR_CSHARP_TRACING: 'true'  # Enables verbose output for troubleshooting
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@main
-      with:
-        output: './TestResults/codeql-report.sarif'
-        
-    # Add a diagnostic check for the SARIF file
-    - name: Check SARIF File Exists
-      shell: pwsh
+    - name: Create Test Results Directory
+      run: mkdir -p ./TestResults
+      
+    - name: Run Unit Tests and Save Plain Text Results
       run: |
-        if (Test-Path -Path "./TestResults/codeql-report.sarif") {
-          Write-Host "SARIF file exists."
-        } else {
-          Write-Host "SARIF file not found at expected location."
-        }
-        
-     #Additional steps after CodeQL analysis to convert SARIF to plain text
-    - name: Convert SARIF to Plain Text Report
+          dotnet test --filter "Category=Unit" --no-build --configuration Release > ./TestResults/unit-tests.txt
+
+    - name: Run BDD Tests and Save Plain Text Results
+      run: |
+          dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
+
+    - name: Install SonarCloud Scanner for .NET
+      run: dotnet tool install --global dotnet-sonarscanner
+
+    - name: Add .NET tools to PATH
+      shell: powershell
+      run: echo "$Env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8
+    
+    - name: Run SonarCloud Code Analysis (Begin)
+      env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
       run: |
-        $sarifFilePath = "./TestResults/codeql-report.sarif"  # Ensure correct SARIF path
-        $outputFilePath = "./TestResults/codeql-results.txt"   # Define plain text output file path
+          dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
 
-        # Check if SARIF file exists
-        if (Test-Path -Path $sarifFilePath) {
-          try {
-            # Use .NET StreamReader to read the SARIF content
-            $sarifJson = [System.IO.File]::ReadAllText((Resolve-Path -Path $sarifFilePath).Path)
-            $sarifContent = $sarifJson | ConvertFrom-Json
-            $report = @()
+    - name: Build Project
+      shell: powershell
+      run: dotnet build
 
-            foreach ($run in $sarifContent.runs) {
-              foreach ($result in $run.results) {
-                $message = $result.message.text
-                $level = $result.level
-                $fileLocation = $result.locations[0].physicalLocation.artifactLocation.uri
-                $line = $result.locations[0].physicalLocation.region.startLine
-                $report += "[$level] $fileLocation (Line $line): $message"
-              }
-            }
-
-            # Write report to plain text file
-            $report | Out-File -FilePath $outputFilePath -Encoding utf8
-            Write-Host "Plain text report generated at $outputFilePath"
+    - name: Run SonarCloud Code Analysis (End)
+      env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
+      shell: powershell
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
+          
+    - name: Save SonarCloud Report to Text File
+      shell: powershell
+      env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
+      run: |
+          # Set up headers and make the API call
+          $headers = @{
+              Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${Env:SONAR_TOKEN}:"))
           }
-          catch {
-            Write-Host "Failed to read SARIF file: $_"
+          $response = Invoke-WebRequest -Uri "https://sonarcloud.io/api/issues/search?componentKeys=SabZero79_bp" -Headers $headers
+          
+          # Parse JSON and select relevant fields
+          $issues = ($response.Content | ConvertFrom-Json).issues | ForEach-Object {
+              "File: $($_.component)",
+              "Line: $($_.line)",
+              "Message: $($_.message)",
+              "`n"    
           }
-        } else {
-          Write-Host "SARIF file not found at $sarifFilePath!"}
+          
+          # Save the formatted output to a file
+          $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
 
-        # Diagnostic step to verify if the plain text file was created
-        if (Test-Path -Path $outputFilePath) {
-          Write-Host "Plain text file was successfully created."
-        } else {
-          Write-Host "Plain text file was NOT created as expected."
-        }
-        
-    # Upload the plain text report as an artifact
-    - name: Upload Plain Text CodeQL Report
-      if: always()
+    
+    - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: PlainText-CodeQL-Report
-        path: ./TestResults/codeql-results.txt
-        retention-days: 7
+          name: TestResults
+          path: ./TestResults
+          retention-days: 7                
 
     - name: Publish
-      run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+      run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
 
+# Deploy to Azure Web apps
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
       with: 
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_SECRET }}
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}                        # your app name
+        publish-profile: ${{ secrets.AZURE_SECRET  }} # Define secret variable in repository settings as per action documentation
         package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
