@@ -1,31 +1,31 @@
- # Step 3: Build on Ubuntu for OWASP Tests
-  name: build_ubuntu
-  runs-on: ubuntu-latest
+# OWASP Dependency checker
+# based on docker image built nightly
+
+name: OWASP Dependency Checker       
+  
+on:
+  workflow_dispatch:                  # manually triggered
+
+jobs:
+  dependency_check:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Code on Ubuntu
-        run: |
-          echo "Building on Ubuntu..."
-          mkdir build
-          echo "Ubuntu build output" > build/output-ubuntu.txt
-
-      - name: Upload Ubuntu Build Artifact
-        uses: actions/upload-artifact@v3
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
         with:
-          name: ubuntu-build
-          path: build/output-ubuntu.txt
-
-  # Step 4: Run OWASP Test on Ubuntu
-  owasp_test_ubuntu:
-    runs-on: ubuntu-latest
-    needs: build_ubuntu
-    steps:
-      - name: Download Ubuntu Build Artifact
-        uses: actions/download-artifact@v3
+          project: 'BMI'
+          path: '.'
+          format: 'HTML'    
+          args: >
+            --failOnCVSS 8            
+          # fail if CVSS score (CVE scoring system) is High >=8
+          
+      - name: Upload Test results
+        uses: actions/upload-artifact@v4
         with:
-          name: ubuntu-build
-
-      - name: Run OWASP Dependency-Check
-        run: echo "Running OWASP Dependency-Check on Ubuntu..."
+           name: Depcheck report
+           path: ${{github.workspace}}/reports
