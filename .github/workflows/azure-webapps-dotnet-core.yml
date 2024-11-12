@@ -36,7 +36,7 @@ jobs:
 
     - name: Run BDD Tests and Save Plain Text Results
       run: |
-          dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/reports/bdd-tests.txt
+          dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
 
     - name: Install SonarCloud Scanner for .NET
       run: dotnet tool install --global dotnet-sonarscanner
