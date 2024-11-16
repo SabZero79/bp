@@ -12,7 +12,7 @@ on:
 
 jobs:
   Unit_BDD_Sonar_Tests_and_Build:                                         
-    runs-on: windows-latest                         # runner
+    runs-on: ubuntu-latest                   # runner
     steps:
     - uses: actions/checkout@v4
     
@@ -25,7 +25,7 @@ jobs:
       run: dotnet restore
       
     - name: Build for Release
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release --no-restore
 
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
@@ -61,5 +61,18 @@ jobs:
         hide_complexity: false
         indicators: true
         output: both
-        thresholds: "10 30"
+        thresholds: '10 30'
+
+    - name: Upload Test Result Files
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: ${{ github.workspace }}/**/TestResults/**/*
+        retention-days: 5
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+      if: always()
+      with:
+        trx_files: "${{ github.workspace }}/**/*.trx"
 
