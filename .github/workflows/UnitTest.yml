@@ -45,8 +45,8 @@ jobs:
         
     - name: Extract Coverage Summary to Markdown File
       run: |
-        line_rate=$(grep -oP '(?<=line-rate=")\d+(\.\d+)?(?=")' coverage/**/coverage.cobertura.xml | awk '{printf "%.2f", $1 * 100}')
-        branch_rate=$(grep -oP '(?<=branch-rate=")\d+(\.\d+)?(?=")' coverage/**/coverage.cobertura.xml | awk '{printf "%.2f", $1 * 100}')
+        line_rate=$(grep -oP '(?<=line-rate=")\d+(\.\d+)?(?=")' coverage/**/coverage.cobertura.xml | awk '{printf "%.0f", $1 * 100}')
+        branch_rate=$(grep -oP '(?<=branch-rate=")\d+(\.\d+)?(?=")' coverage/**/coverage.cobertura.xml | awk '{printf "%.0f", $1 * 100}')
         total_lines=$(grep -oP '(?<=lines-covered=")\d+(?=")' coverage/**/coverage.cobertura.xml)
         total_lines_valid=$(grep -oP '(?<=lines-valid=")\d+(?=")' coverage/**/coverage.cobertura.xml)
         total_branches=$(grep -oP '(?<=branches-covered=")\d+(?=")' coverage/**/coverage.cobertura.xml)
