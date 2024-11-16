@@ -1,0 +1,45 @@
+name: Unit_Test                                  
+
+env:
+  AZURE_WEBAPP_NAME: BloodPressureApp               # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'              
+
+on:
+ workflow_dispatch:        
+# push:                                             #  workflow_dispatch for manually triggered
+#   branches: [ master ]
+ 
+
+jobs:
+  Unit_BDD_Sonar_Tests_and_Build:                                         
+    runs-on: windows-latest                         # runner
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Install dependencies
+      run: dotnet restore
+      
+    - name: Build for Release
+      run: dotnet build --configuration Release
+
+    - name: Create Test Results Directory
+      run: mkdir -p ./TestResults
+      
+    - name: Run Unit Tests and Save Plain Text Results
+      run: |
+        dotnet test --filter "Category=Unit" --no-build --configuration Release --collect "Code coverage" > ./TestResults/unit-tests.txt
+        coverageDir=$(find . -type d -name TestResults)
+        coverageFile=$(find "$coverageDir" -name "*.coverage")
+        reportDir="./TestResults/CoverageReport"
+        reportgenerator -reports:$coverageFile -targetdir:$reportDir -reporttypes:TextSummary
+        if [ -f "$reportDir/Summary.txt" ]; then
+          echo "" >> ./TestResults/unit-tests.txt
+          echo "Code Coverage Summary:" >> ./TestResults/unit-tests.txt
+          cat "$reportDir/Summary.txt" >> ./TestResults/unit-tests.txt
+        fi
+      shell: bash
