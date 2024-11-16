@@ -51,6 +51,7 @@ jobs:
         total_lines_valid=$(grep -oP '(?<=lines-valid=")\d+' coverage/**/coverage.cobertura.xml | head -1)
         total_branches=$(grep -oP '(?<=branches-covered=")\d+' coverage/**/coverage.cobertura.xml | head -1)
         total_branches_valid=$(grep -oP '(?<=branches-valid=")\d+' coverage/**/coverage.cobertura.xml | head -1)
+        min_line_rate=$(grep -oP '(?<=thresholds: \')\d+' .github/workflows/unit_test.yaml | head -1)
         line_rate=$(echo $line_rate | cut -c1-2)
         branch_rate=$(echo $branch_rate | cut -c1-2)
         echo 'Package | Line Rate | Branch Rate | Health' > coverage/coverage_summary.md
@@ -58,7 +59,7 @@ jobs:
         echo "BPCalculator | ${line_rate}% | ${branch_rate}% | ➖" >> coverage/coverage_summary.md
         echo "**Summary** | **${line_rate}%** (${total_lines} / ${total_lines_valid}) | **${branch_rate}%** (${total_branches} / ${total_branches_valid}) | ➖" >> coverage/coverage_summary.md
         echo '' >> coverage/coverage_summary.md
-        echo '_Minimum allowed line rate is `10%`_' >> coverage/coverage_summary.md
+        echo "_Minimum allowed line rate is \`${min_line_rate}%\`_" >> coverage/coverage_summary.md
 
     - name: Upload Coverage Summary as Artifact
       uses: actions/upload-artifact@v3
