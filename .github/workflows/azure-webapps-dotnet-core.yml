@@ -39,7 +39,6 @@ jobs:
       - name: Run Unit Tests and Save Plain Text Results
         run: |
           dotnet test --filter "Category=Unit" --no-build --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
-
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
@@ -71,7 +70,6 @@ jobs:
           echo "**Summary** | **${line_rate}%** (${total_lines} / ${total_lines_valid}) | **${branch_rate}%** (${total_branches} / ${total_branches_valid}) | ➖" >> coverage/coverage_summary.md
           echo '' >> coverage/coverage_summary.md
           echo "_Minimum allowed line rate is \`${min_line_rate}%\`_" >> coverage/coverage_summary.md
-
       - name: Upload Coverage Summary as Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -85,7 +83,7 @@ jobs:
           path: coverage/**
 
   Unit_BDD_Sonar_Tests_and_Build:                                         
-    runs-on: ubuntu-latest                         # runner
+    runs-on: windows-latest                         # runner
     steps:
     - uses: actions/checkout@v4
     
@@ -97,20 +95,18 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
       
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+    - name: Build for Release
+      run: dotnet build --configuration Release
 
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
       
     - name: Run Unit Tests and Save Plain Text Results
       run: |
-          dotnet test --filter "Category=Unit" --no-build --configuration Release --no-build --verbosity normal > ./TestResults/unit-tests.txt
-      
+          dotnet test --filter "Category=Unit" --no-build --configuration Release  > ./TestResults/unit-tests.txt
     - name: Run BDD Tests and Save Plain Text Results
       run: |
           dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
-
     - name: Install SonarCloud Scanner for .NET
       run: dotnet tool install --global dotnet-sonarscanner
 
@@ -124,7 +120,6 @@ jobs:
       shell: powershell
       run: |
           dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
-
     - name: Build Project
       shell: powershell
       run: dotnet build
@@ -156,7 +151,6 @@ jobs:
           
           # Save the formatted output to a file
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
-
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v4
       with:
