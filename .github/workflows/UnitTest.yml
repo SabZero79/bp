@@ -1,0 +1,76 @@
+name: Unit_Test                                  
+
+env:
+  AZURE_WEBAPP_NAME: BloodPressureApp               # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'
+  MIN_LINE_RATE: 10   
+  
+on:
+ workflow_dispatch:        
+# push:                                             #  workflow_dispatch for manually triggered
+#   branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: CI Build
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --filter "Category=Unit" --no-build --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+    - name: Code Coverage Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage/**/coverage.cobertura.xml
+        badge: true
+        fail_below_min: true
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '10 30'
+        
+    - name: Extract Coverage Summary to Markdown File
+      run: |
+        line_rate=$(grep -oP '(?<=line-rate=")\d+\.\d+' coverage/**/coverage.cobertura.xml | awk '{printf "%.0f", $1 * 100}')
+        branch_rate=$(grep -oP '(?<=branch-rate=")\d+\.\d+' coverage/**/coverage.cobertura.xml | awk '{printf "%.0f", $1 * 100}')
+        total_lines=$(grep -oP '(?<=lines-covered=")\d+' coverage/**/coverage.cobertura.xml | head -1)
+        total_lines_valid=$(grep -oP '(?<=lines-valid=")\d+' coverage/**/coverage.cobertura.xml | head -1)
+        total_branches=$(grep -oP '(?<=branches-covered=")\d+' coverage/**/coverage.cobertura.xml | head -1)
+        total_branches_valid=$(grep -oP '(?<=branches-valid=")\d+' coverage/**/coverage.cobertura.xml | head -1)
+        min_line_rate=$MIN_LINE_RATE
+        line_rate=$(echo $line_rate | cut -c1-2)
+        branch_rate=$(echo $branch_rate | cut -c1-2)
+        echo 'Package | Line Rate | Branch Rate | Health' > coverage/coverage_summary.md
+        echo '-------- | --------- | ----------- | ------' >> coverage/coverage_summary.md
+        echo "BPCalculator | ${line_rate}% | ${branch_rate}% | ➖" >> coverage/coverage_summary.md
+        echo "**Summary** | **${line_rate}%** (${total_lines} / ${total_lines_valid}) | **${branch_rate}%** (${total_branches} / ${total_branches_valid}) | ➖" >> coverage/coverage_summary.md
+        echo '' >> coverage/coverage_summary.md
+        echo "_Minimum allowed line rate is \`${min_line_rate}%\`_" >> coverage/coverage_summary.md
+
+    - name: Upload Coverage Summary as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-summary
+        path: coverage/coverage_summary.md
+
+    - name: Upload Coverage Report as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/**
+
