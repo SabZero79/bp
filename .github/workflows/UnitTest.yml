@@ -57,15 +57,15 @@ jobs:
           package=$(echo "$line" | grep -oP '(?<=<package name=").*?(?=")')
           line_rate=$(echo "$line" | grep -oP '(?<=line-rate=")\d+\.\d+(?=")')
           branch_rate=$(echo "$line" | grep -oP '(?<=branch-rate=")\d+\.\d+(?=")')
-          line_rate_percentage=$(printf '%.0f' $(echo "$line_rate * 100" | bc))
-          branch_rate_percentage=$(printf '%.0f' $(echo "$branch_rate * 100" | bc))
+          line_rate_percentage=$(awk "BEGIN {printf "%.0f", $line_rate * 100}")
+          branch_rate_percentage=$(awk "BEGIN {printf "%.0f", $branch_rate * 100}")
           health=$(if (( $(echo "$line_rate_percentage >= 10" | bc -l) )); then echo '➖'; else echo '❌'; fi)
           echo "| $package | ${line_rate_percentage}% | ${branch_rate_percentage}% | $health |" >> coverage/summary.md
         done
         total_line_rate=$(grep -oP '(?<=<coverage line-rate=")\d+\.\d+(?=")' coverage/**/coverage.cobertura.xml)
         total_branch_rate=$(grep -oP '(?<=<coverage branch-rate=")\d+\.\d+(?=")' coverage/**/coverage.cobertura.xml)
-        total_line_rate_percentage=$(printf '%.0f' $(echo "$total_line_rate * 100" | bc))
-        total_branch_rate_percentage=$(printf '%.0f' $(echo "$total_branch_rate * 100" | bc))
+        total_line_rate_percentage=$(awk "BEGIN {printf "%.0f", $total_line_rate * 100}")
+        total_branch_rate_percentage=$(awk "BEGIN {printf "%.0f", $total_branch_rate * 100}")
         echo '**Summary** | **${total_line_rate_percentage}%** (N/A) | **${total_branch_rate_percentage}%** (N/A) | ➖' >> coverage/summary.md
         echo '_Minimum allowed line rate is 10%_' >> coverage/summary.md
 
@@ -74,4 +74,5 @@ jobs:
       with:
         name: human-readable-coverage-report
         path: coverage/summary.md
+
         
