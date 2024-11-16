@@ -49,6 +49,3 @@ jobs:
         recreate: true
         path: code-coverage-results.txt
         
-    
-                [1]: https://github.com/peter-evans/create-or-update-comment
-              reactions: '+1'
