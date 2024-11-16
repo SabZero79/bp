@@ -53,15 +53,13 @@ jobs:
       run: |
         echo '| Package | Line Rate | Branch Rate | Health |' > coverage/summary.md
         echo '| -------- | --------- | ----------- | ------ |' >> coverage/summary.md
-        while IFS= read -r line; do
-          package=$(echo "$line" | grep -oP '(?<=<package name=").*?(?=" line-rate=")')
+        grep -oP '<package name=".*?" line-rate="\d+\.\d+" branch-rate="\d+\.\d+"' coverage/**/coverage.cobertura.xml | while IFS= read -r line; do
+          package=$(echo "$line" | grep -oP '(?<=<package name=").*?(?=")')
           line_rate=$(echo "$line" | grep -oP '(?<=line-rate=")\d+\.\d+(?=")')
           branch_rate=$(echo "$line" | grep -oP '(?<=branch-rate=")\d+\.\d+(?=")')
           health=$(if (( $(echo "$line_rate >= 10" |bc -l) )); then echo '➖'; else echo '❌'; fi)
-          if [ -n "$package" ]; then
-            echo "| $package | ${line_rate}% | ${branch_rate}% | $health |" >> coverage/summary.md
-          fi
-        done < <(cat coverage/**/coverage.cobertura.xml)
+          echo "| $package | ${line_rate}% | ${branch_rate}% | $health |" >> coverage/summary.md
+        done
         echo '**Summary** | **N/A** (N/A) | **N/A** (N/A) | ➖' >> coverage/summary.md
         echo '_Minimum allowed line rate is 10%_' >> coverage/summary.md
 
