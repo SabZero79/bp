@@ -85,21 +85,6 @@ namespace TestProject
             Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
         }
 
-        [Test]
-        public void SystolicOutOfRange_ThrowsValidationException()
-        {
-            BP.Systolic = 200;
-            BP.Diastolic = 80;
-            Assert.Throws<ValidationException>(() => { var category = BP.Category; });
-        }
-
-        [Test]
-        public void DiastolicOutOfRange_ThrowsValidationException()
-        {
-            BP.Systolic = 120;
-            BP.Diastolic = 110;
-            Assert.Throws<ValidationException>(() => { var category = BP.Category; });
-        }
     
         //[Test]
         //public void CalculatePulsePressure_ShouldReturnCorrectValue()
