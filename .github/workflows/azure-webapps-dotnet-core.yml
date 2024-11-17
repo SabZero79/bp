@@ -180,12 +180,23 @@ jobs:
           
           # Save the formatted output to a file
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
+          
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v4
       with:
           name: TestResults_UnitTest-BDD-SonarCloud
           path: ./TestResults
           retention-days: 7
+          
+  deploy_test_blue_green:                                             
+    name: deploy to staging slot, run E2E tests, swap slots
+    needs: Unit_BDD_Sonar_Tests_and_Build
+    environment:
+      name: QA
+      url: https://sv-bpcalculator-ga-staging.azurewebsites.net                                 
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
@@ -196,4 +207,5 @@ jobs:
       with: 
             app-name: ${{ env.AZURE_WEBAPP_NAME }}                        # your app name
             publish-profile: ${{ secrets.AZURE_SECRET  }} # Define secret variable in repository settings as per action documentation
+            slot-name: staging
             package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
