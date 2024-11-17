@@ -63,7 +63,6 @@ jobs:
           echo "    </DataCollectors>" >> coverage.runsettings
           echo "  </DataCollectionRunSettings>" >> coverage.runsettings
           echo "</RunSettings>" >> coverage.runsettings
-
       # CODE COVERAGE
       - name: Run Unit Tests and Save Plain Text Results
         run: dotnet test --settings coverage.runsettings --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
@@ -187,16 +186,6 @@ jobs:
           name: TestResults_UnitTest-BDD-SonarCloud
           path: ./TestResults
           retention-days: 7
-          
-  deploy_test_blue_green:                                             
-    name: deploy to staging slot, run E2E tests, swap slots
-    needs: Unit_BDD_Sonar_Tests_and_Build
-    environment:
-      name: QA
-      url: https://sv-bpcalculator-ga-staging.azurewebsites.net                                 
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v4
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
@@ -218,4 +207,3 @@ jobs:
       with:
         name: Selenium Tests Results
         path: .TestResults/selenium.trx
-  
