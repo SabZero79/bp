@@ -46,6 +46,24 @@ jobs:
            name: Dependency Check report
            path: ${{github.workspace}}/reports
 
+      - name: Create Runsettings File
+        run: |
+          echo "<?xml version='1.0' encoding='utf-8'?>" > coverage.runsettings
+          echo "<RunSettings>" >> coverage.runsettings
+          echo "  <DataCollectionRunSettings>" >> coverage.runsettings
+          echo "    <DataCollectors>" >> coverage.runsettings
+          echo "      <DataCollector friendlyName='XPlat Code Coverage'>" >> coverage.runsettings
+          echo "        <Configuration>" >> coverage.runsettings
+          echo "          <Include>" >> coverage.runsettings
+          echo "            <ModulePath>.*BPCalculator.*</ModulePath>" >> coverage.runsettings
+          echo "            <Class>.*BloodPressure.*</Class>" >> coverage.runsettings
+          echo "          </Include>" >> coverage.runsettings
+          echo "        </Configuration>" >> coverage.runsettings
+          echo "      </DataCollector>" >> coverage.runsettings
+          echo "    </DataCollectors>" >> coverage.runsettings
+          echo "  </DataCollectionRunSettings>" >> coverage.runsettings
+          echo "</RunSettings>" >> coverage.runsettings
+
       # CODE COVERAGE
       - name: Run Unit Tests and Save Plain Text Results
         run: dotnet test --settings coverage.runsettings --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
