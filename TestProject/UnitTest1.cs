@@ -1,4 +1,5 @@
 using BPCalculator;
+using System.ComponentModel.DataAnnotations;
 namespace TestProject
 {
     [Category("Unit")]
@@ -52,6 +53,54 @@ namespace TestProject
             Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
         }
 
+        [Test]
+        public void CalculateBPCategory_LowSystolicHighDiastolic()
+        {
+            BP.Systolic = 80;
+            BP.Diastolic = 95;
+            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
+        }
+
+        [Test]
+        public void CalculateBPCategory_IdealSystolicLowDiastolic()
+        {
+            BP.Systolic = 110;
+            BP.Diastolic = 55;
+            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.Ideal));
+        }
+
+        [Test]
+        public void CalculateBPCategory_PreHighSystolicIdealDiastolic()
+        {
+            BP.Systolic = 130;
+            BP.Diastolic = 75;
+            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.PreHigh));
+        }
+
+        [Test]
+        public void CalculateBPCategory_HighSystolicLowDiastolic()
+        {
+            BP.Systolic = 145;
+            BP.Diastolic = 70;
+            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
+        }
+
+        [Test]
+        public void SystolicOutOfRange_ThrowsValidationException()
+        {
+            BP.Systolic = 200;
+            BP.Diastolic = 80;
+            Assert.Throws<ValidationException>(() => { var category = BP.Category; });
+        }
+
+        [Test]
+        public void DiastolicOutOfRange_ThrowsValidationException()
+        {
+            BP.Systolic = 120;
+            BP.Diastolic = 110;
+            Assert.Throws<ValidationException>(() => { var category = BP.Category; });
+        }
+    
         //[Test]
         //public void CalculatePulsePressure_ShouldReturnCorrectValue()
         //{
