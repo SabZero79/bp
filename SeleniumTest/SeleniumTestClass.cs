@@ -12,14 +12,19 @@ using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Interactions;
 using NUnit.Framework;
 [TestFixture]
-public class Test1Test
+public class SeleniumTestBloodPressure
 {
     private IWebDriver driver;
     public IDictionary<string, object> vars { get; private set; }
     private IJavaScriptExecutor js;
+
+    // URI for web app being tested
+    private String? webAppUri;
+
     [SetUp]
     public void SetUp()
     {
+        webAppUri = Environment.GetEnvironmentVariable("webAppUri");
         driver = new ChromeDriver();
         js = (IJavaScriptExecutor)driver;
         vars = new Dictionary<string, object>();
@@ -30,9 +35,9 @@ public class Test1Test
         driver.Quit();
     }
     [Test]
-    public void test1()
+    public void TestBloodPressure()
     {
-        driver.Navigate().GoToUrl("http://localhost:5000/");
+        driver.Navigate().GoToUrl(webAppUri);
         driver.Manage().Window.Size = new System.Drawing.Size(1022, 842);
         {
             var element = driver.FindElement(By.CssSelector(".form-group:nth-child(1) > .control-label"));
