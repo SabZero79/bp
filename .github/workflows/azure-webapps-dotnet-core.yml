@@ -209,3 +209,14 @@ jobs:
             publish-profile: ${{ secrets.AZURE_SECRET  }} # Define secret variable in repository settings as per action documentation
             slot-name: staging
             package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+
+     # Run Selenium tests
+    - name: Run Selenium tests
+      run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp/SeleniumTest.dll --logger:"trx;LogFileName=selenium.trx"
+  
+    # Upload results of selenium tests
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Selenium Tests Results
+        path: ./TestResults/selenium.trx
+  
