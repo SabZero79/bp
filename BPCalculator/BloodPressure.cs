@@ -39,25 +39,30 @@ namespace BPCalculator
         // Main logic of how to calculate the blood pressure categories
         public BPCategory CalculateBPCategory()
         {
+            BPCategory category;
             if (Systolic < 90)
             {
-                if (Diastolic < 60) return BPCategory.Low;
-                if (Diastolic < 80) return BPCategory.Ideal;
-                if (Diastolic < 90) return BPCategory.PreHigh;
-                return BPCategory.High;
+                if (Diastolic < 60) category = BPCategory.Low;
+                else if (Diastolic < 80) category = BPCategory.Ideal;
+                else if (Diastolic < 90) category = BPCategory.PreHigh;
+                else category = BPCategory.High;
             }
-            if (Systolic < 120)
+            else if (Systolic < 120)
             {
-                if (Diastolic < 80) return BPCategory.Ideal;
-                if (Diastolic < 90) return BPCategory.PreHigh;
-                return BPCategory.High;
+                if (Diastolic < 80) category = BPCategory.Ideal;
+                else if (Diastolic < 90) category = BPCategory.PreHigh;
+                else category = BPCategory.High;
             }
-            if (Systolic < 140)
+            else if (Systolic < 140)
             {
-                if (Diastolic < 90) return BPCategory.PreHigh;
-                return BPCategory.High;
+                if (Diastolic < 90) category = BPCategory.PreHigh;
+                else category = BPCategory.High;
             }
-            return BPCategory.High;
+            else
+            {
+                category = BPCategory.High;
+            }
+            return category;
         }
         // New feature - calculate pulse pressure -
         // To calculate your pulse pressure, subtract the diastolic blood pressure from the systolic blood pressure
