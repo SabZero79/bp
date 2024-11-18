@@ -81,6 +81,9 @@ jobs:
           output: both
           thresholds: '10 30' #10% of code coverage
 
+      - name: Write to Job Summary
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+
       # CODE COVERAGE TXT REPORT
       - name: Extract Coverage Summary to Markdown File
         run: |
@@ -99,6 +102,7 @@ jobs:
           echo "**Summary** | **${line_rate}%** (${total_lines} / ${total_lines_valid}) | **${branch_rate}%** (${total_branches} / ${total_branches_valid}) | ➖" >> coverage/coverage_summary.md
           echo '' >> coverage/coverage_summary.md
           echo "_Minimum allowed line rate is \`${min_line_rate}%\`_" >> coverage/coverage_summary.md
+          
       - name: Upload Coverage Summary as Artifact
         uses: actions/upload-artifact@v3
         with:
