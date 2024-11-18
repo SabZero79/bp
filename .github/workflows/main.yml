@@ -49,6 +49,7 @@
         format: markdown
         indicators: true
         output: both
+        thresholds: '10 30'
 
     - name: Generate Report
       run: reportgenerator \
