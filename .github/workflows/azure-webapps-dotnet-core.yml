@@ -66,7 +66,7 @@ jobs:
      
       # CODE COVERAGE
       - name: Run Unit Tests and Coverage Results
-        run: dotnet test --settings coverage.runsettings --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: dotnet test --filter "Category=Unit" --settings coverage.runsettings --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
       
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -80,9 +80,6 @@ jobs:
           indicators: true
           output: both
           thresholds: '10 30' #10% of code coverage
-
-      - name: Write to Job Summary
-        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
       # CODE COVERAGE TXT REPORT
       - name: Extract Coverage Summary to Markdown File
