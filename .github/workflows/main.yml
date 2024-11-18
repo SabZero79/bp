@@ -30,10 +30,7 @@
           echo "    <DataCollectors>" >> coverage.runsettings
           echo "      <DataCollector friendlyName='XPlat Code Coverage'>" >> coverage.runsettings
           echo "        <Configuration>" >> coverage.runsettings
-          echo "          <Include>" >> coverage.runsettings
-          echo "            <ModulePath>BPCalculator.*</ModulePath>" >> coverage.runsettings
-          echo "            <Class>BloodPressure.cs</Class>" >> coverage.runsettings
-          echo "          </Include>" >> coverage.runsettings
+          echo "          <Exclude>[*.SeleniumTest?]*</Exclude>" >> coverage.runsettings
           echo "        </Configuration>" >> coverage.runsettings
           echo "      </DataCollector>" >> coverage.runsettings
           echo "    </DataCollectors>" >> coverage.runsettings
