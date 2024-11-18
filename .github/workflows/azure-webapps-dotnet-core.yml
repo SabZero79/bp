@@ -55,6 +55,7 @@ jobs:
           echo "    <DataCollectors>" >> coverage.runsettings
           echo "      <DataCollector friendlyName='XPlat Code Coverage'>" >> coverage.runsettings
           echo "        <Configuration>" >> coverage.runsettings
+          echo "          <Format>cobertura,opencover</Format>" >> coverage.runsettings
           echo "          <Include>" >> coverage.runsettings
           echo "            <ModulePath>BPCalculator.*</ModulePath>" >> coverage.runsettings
           echo "            <Class>BloodPressure.cs</Class>" >> coverage.runsettings
