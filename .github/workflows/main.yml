@@ -52,7 +52,8 @@
         thresholds: '10 30'
 
     - name: Generate Report
-      run: reportgenerator \
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+           reportgenerator \
           -reports:".\**\TestResults\**\coverage.cobertura.xml" \
           -targetdir:"coverage" \
           -reporttypes:Html
