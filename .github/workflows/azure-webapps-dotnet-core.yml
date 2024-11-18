@@ -201,10 +201,4 @@ jobs:
 
      # Run Selenium tests
     - name: Run Selenium tests
-      run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp/SeleniumTest.dll /Settings:SeleniumTest.runsettings > ./TestResults/Selenium-test.trx
-  
-    # Upload results of selenium tests
-    - uses: actions/upload-artifact@v4
-      with:
-        name: Selenium Tests Results
-        path: ./TestResults/Selenium-test.trx
+      run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp/SeleniumTest.dll /Settings:SeleniumTest.runsettings
