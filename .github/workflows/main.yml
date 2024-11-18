@@ -38,7 +38,7 @@
           echo "</RunSettings>" >> coverage.runsettings
 
     - name: Test
-      run: dotnet test --filter "Category=Unit" --no-build --settings coverage.runsettings
+      run: dotnet test --no-build --settings coverage.runsettings
 
     - name: Publish coverage
       uses: irongut/CodeCoverageSummary@v1.3.0
