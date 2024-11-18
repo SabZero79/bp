@@ -1,59 +1,33 @@
- name: Coverage
- 
- on:
-   workflow_dispatch:
-   
- jobs:
-   build:
- 
-    runs-on: ubuntu-latest
+name: Run Unit Tests with Code Coverage
+
+on:
+ workflow_dispatch:
+
+jobs:
+  unit_tests_code_coverage:
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
-    
+        dotnet-version: '8.0.x'
+
     - name: Restore dependencies
       run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --no-restore 
 
-    - name: Create Runsettings File
+    - name: Build solution
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Run Unit Tests with Code Coverage
       run: |
-          echo "<?xml version='1.0' encoding='utf-8'?>" > coverage.runsettings
-          echo "<RunSettings>" >> coverage.runsettings
-          echo "  <DataCollectionRunSettings>" >> coverage.runsettings
-          echo "    <DataCollectors>" >> coverage.runsettings
-          echo "      <DataCollector friendlyName='XPlat Code Coverage'>" >> coverage.runsettings
-          echo "        <Configuration>" >> coverage.runsettings
-          echo "          <Exclude>[*.SeleniumTest?]*</Exclude>" >> coverage.runsettings
-          echo "        </Configuration>" >> coverage.runsettings
-          echo "      </DataCollector>" >> coverage.runsettings
-          echo "    </DataCollectors>" >> coverage.runsettings
-          echo "  </DataCollectionRunSettings>" >> coverage.runsettings
-          echo "</RunSettings>" >> coverage.runsettings
+        dotnet test --no-build --configuration Release --filter TestCategory=Unit /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
-    - name: Test
-      run: dotnet test TestProject/Unit_BDD_Tests.csproj --filter "Category=Unit" --no-build --settings coverage.runsettings --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
-
-    - name: Publish coverage
-      uses: irongut/CodeCoverageSummary@v1.3.0
+    - name: Upload Code Coverage Report
+      uses: actions/upload-artifact@v3
       with:
-        filename: '**/TestResults/**/coverage.cobertura.xml'
-        badge: true
-        fail_below_min: true
-        format: markdown
-        indicators: true
-        output: both
-        thresholds: '10 30'
-
-    - name: Generate Report
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-           reportgenerator \
-          -reports:".\**\TestResults\**\coverage.cobertura.xml" \
-          -targetdir:"coverage" \
-          -reporttypes:Html
+        name: code-coverage-report
+        path: '**/coverage.cobertura.xml'
