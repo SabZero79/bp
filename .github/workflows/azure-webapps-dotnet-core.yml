@@ -100,7 +100,7 @@ jobs:
           echo '' >> coverage/coverage_summary.md
           echo "_Minimum allowed line rate is \`${min_line_rate}%\`_" >> coverage/coverage_summary.md
       - name: Upload Coverage Summary as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-summary
           path: coverage/coverage_summary.md
