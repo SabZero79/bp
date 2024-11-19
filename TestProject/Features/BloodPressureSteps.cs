@@ -1,14 +1,13 @@
 ﻿using BPCalculator;
-using NUnit.Framework;
+using Xunit;
 using TechTalk.SpecFlow;
 
 namespace Unit_BDD_Tests.Features
 {
     [Binding]
-    [Category("BDD")]
     public class BloodPressureSteps
     {
-        public required BloodPressure BP;
+        public BloodPressure BP { get; private set; }
         private BPCategory calculatedCategory;
 
         [Given(@"the systolic pressure is (.*)")]
@@ -32,7 +31,7 @@ namespace Unit_BDD_Tests.Features
         [Then(@"the category should be ""(.*)""")]
         public void ThenTheCategoryShouldBe(string expectedCategory)
         {
-            Assert.That(calculatedCategory.ToString(), Is.EqualTo(expectedCategory));
+            Assert.Equal(expectedCategory, calculatedCategory.ToString());
         }
     }
 }

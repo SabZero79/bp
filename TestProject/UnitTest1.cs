@@ -1,105 +1,106 @@
 using BPCalculator;
-using System.ComponentModel.DataAnnotations;
+using Xunit;
+
 namespace Unit_BDD_Tests
 {
-    [Category("Unit")]
     public class BloodPressureTests
     {
-        public required BloodPressure BP;
+        public BloodPressure BP { get; private set; }
 
-        [SetUp]
-        public void SetUp()
+        public BloodPressureTests()
         {
             BP = new BloodPressure();
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_LowBloodPressure()
         {
             BP.Systolic = 85;
             BP.Diastolic = 55;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.Low));
+            Assert.Equal(BPCategory.Low, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_IdealBloodPressure()
         {
             BP.Systolic = 115;
             BP.Diastolic = 75;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.Ideal));
+            Assert.Equal(BPCategory.Ideal, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_PreHighBloodPressure()
         {
             BP.Systolic = 125;
             BP.Diastolic = 85;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.PreHigh));
+            Assert.Equal(BPCategory.PreHigh, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_HighBloodPressure_SystolicBoundary()
         {
             BP.Systolic = 140;
             BP.Diastolic = 95;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_HighBloodPressure_DiastolicBoundary()
         {
             BP.Systolic = 150;
             BP.Diastolic = 100;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_LowSystolicHighDiastolic()
         {
             BP.Systolic = 80;
             BP.Diastolic = 95;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_IdealSystolicLowDiastolic()
         {
             BP.Systolic = 110;
             BP.Diastolic = 55;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.Ideal));
+            Assert.Equal(BPCategory.Ideal, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_PreHighSystolicIdealDiastolic()
         {
             BP.Systolic = 130;
             BP.Diastolic = 75;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.PreHigh));
+            Assert.Equal(BPCategory.PreHigh, BP.CalculateBPCategory());
         }
 
-        [Test]
+        [Fact]
         public void CalculateBPCategory_HighSystolicLowDiastolic()
         {
             BP.Systolic = 145;
             BP.Diastolic = 70;
-            Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
         }
 
+        // Uncomment these if you want to include pulse pressure tests
+        /*
+        [Fact]
+        public void CalculatePulsePressure_ShouldReturnCorrectValue()
+        {
+            BP.Systolic = 120;
+            BP.Diastolic = 80;
+            Assert.Equal(40, BP.CalculatePulsePressure());
+        }
 
-        //[Test]
-        //public void CalculatePulsePressure_ShouldReturnCorrectValue()
-        //{
-        //    BP.Systolic = 120;
-        //    BP.Diastolic = 80;
-        //    Assert.That(BP.CalculatePulsePressure(), Is.EqualTo(40));
-        //}
-
-        //[Test]
-        //public void CalculatePulsePressure_HandlesLowValues()
-        //{
-        //    BP.Systolic = 70;
-        //    BP.Diastolic = 40;
-        //    Assert.That(BP.CalculatePulsePressure(), Is.EqualTo(30));
-        //}
+        [Fact]
+        public void CalculatePulsePressure_HandlesLowValues()
+        {
+            BP.Systolic = 70;
+            BP.Diastolic = 40;
+            Assert.Equal(30, BP.CalculatePulsePressure());
+        }
+        */
     }
 }
