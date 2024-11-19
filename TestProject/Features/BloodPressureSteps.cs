@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using TechTalk.SpecFlow;
 
-namespace BPCalculator.Tests.Steps
+namespace Unit_BDD_Tests.Features
 {
     [Binding]
     [Category("BDD")]

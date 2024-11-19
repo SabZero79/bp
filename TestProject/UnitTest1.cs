@@ -1,6 +1,6 @@
 using BPCalculator;
 using System.ComponentModel.DataAnnotations;
-namespace TestProject
+namespace Unit_BDD_Tests
 {
     [Category("Unit")]
     public class BloodPressureTests
@@ -85,7 +85,7 @@ namespace TestProject
             Assert.That(BP.CalculateBPCategory(), Is.EqualTo(BPCategory.High));
         }
 
-    
+
         //[Test]
         //public void CalculatePulsePressure_ShouldReturnCorrectValue()
         //{

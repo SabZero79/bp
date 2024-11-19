@@ -4,6 +4,8 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+namespace SeleniumTest;
+
 [TestClass]
 public class SeleniumTestBloodPressure
 {
@@ -21,7 +23,7 @@ public class SeleniumTestBloodPressure
     }
 
     // URI for web app being tested
-    private String webAppUri;
+    private string webAppUri;
 
     [TestInitialize]
     public void SetUp()
