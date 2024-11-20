@@ -41,6 +41,9 @@ jobs:
       run: dotnet test --settings coverage.runsettings
       continue-on-error: true
       
+    - name: Install Report Generator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      
     - name: Generate Coverage Report
       run: reportgenerator -reports:".\**\TestResults\**\coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
 
