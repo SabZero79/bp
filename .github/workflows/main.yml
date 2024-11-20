@@ -38,7 +38,7 @@ jobs:
             echo "</RunSettings>" >> coverage.runsettings
       
     - name: Test
-      run: dotnet test --settings coverage.runsettings
+      run: dotnet test TestProject/Unit_BDD_Tests.csproj --settings coverage.runsettings
       continue-on-error: true
       
     - name: Install Report Generator
