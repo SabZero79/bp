@@ -21,14 +21,32 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore
+
+    - name: Create Runsettings File
+      run: |
+            echo "<?xml version='1.0' encoding='utf-8' ?>" >> coverage.runsettings
+            echo "<RunSettings>" >> coverage.runsettings
+            echo "   <DataCollectionRunSettings>" >> coverage.runsettings
+            echo "    <DataCollectors>" >> coverage.runsettings
+            echo "      <DataCollector friendlyName='XPlat code coverage'>" >> coverage.runsettings
+            echo "        <Configuration>" >> coverage.runsettings
+            echo "          <Format>cobertura,opencover</Format>" >> coverage.runsettings
+            echo "        </Configuration>" >> coverage.runsettings
+            echo "      </DataCollector>" >> coverage.runsettings
+            echo "    </DataCollectors>" >> coverage.runsettings
+            echo "  </DataCollectionRunSettings>" >> coverage.runsettings
+            echo "</RunSettings>" >> coverage.runsettings
       
     - name: Test
-      run: dotnet test --logger trx --filter "Unit" --results-directory "TestResults"
+      run: dotnet test --settings coverage.runsettings
+      
+    - name: Generate Coverage Report
+      run: reportgenerator -reports:".\**\TestResults\**\coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: ${{ always() }}
       with:
-        name: test-results
-        path: TestResults
+          name: coverage-report
+          path: coverage/**
       
