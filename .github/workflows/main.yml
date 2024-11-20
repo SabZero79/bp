@@ -24,7 +24,7 @@ jobs:
 
     - name: Create Runsettings File
       run: |
-            echo "<?xml version="1.0" encoding="utf-8" ?>" >> coverage.runsettings
+            echo "<?xml version='1.0' encoding='utf-8' ?>" >> coverage.runsettings
             echo "<RunSettings>" >> coverage.runsettings
             echo "   <DataCollectionRunSettings>" >> coverage.runsettings
             echo "    <DataCollectors>" >> coverage.runsettings
