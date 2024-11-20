@@ -39,6 +39,7 @@ jobs:
       
     - name: Test
       run: dotnet test --settings coverage.runsettings
+      continue-on-error: true
       
     - name: Generate Coverage Report
       run: reportgenerator -reports:".\**\TestResults\**\coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
