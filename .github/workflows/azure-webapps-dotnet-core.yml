@@ -150,14 +150,13 @@ jobs:
           name: coverage-report
           path: coverage/**
 
-    #Unit tests - xUnit
-    - name: Run Unit Tests and Save Plain Text Results
-      run: |
-          dotnet test TestProject/UnitTests.csproj --no-build --configuration Release  > ./TestResults/unit-tests.txt
-
     #BDD tests - Specflow
+    - name: Run Unit Tests and Save Plain Text Results
+      run: dotnet test BDDTestProject/BDDTestProject.csproj --no-build --configuration Release  > ./TestResults/bdd-tests.txt
+
+    #Unit tests - XUnite
     - name: Run BDD Tests and Save Plain Text Results
-      run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp/BDDTestProject.dll --no-build --configuration Release > ./TestResults/bdd-tests.txt
+      run: dotnet test TestProject/UnitTests.csproj --no-build --configuration Release > ./TestResults/unit-tests.txt
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
