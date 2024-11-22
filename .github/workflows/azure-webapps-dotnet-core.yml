@@ -65,49 +65,7 @@ jobs:
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
 
-    #Coverage report - VS solution only allows one runsetting file and that's used for Selenium tests, need to create one on the fly for coverage..
-    - name: Create Runsettings File
-      run: |
-            echo "<?xml version='1.0' encoding='utf-8' ?>" >> coverage.runsettings
-            echo "<RunSettings>" >> coverage.runsettings
-            echo "   <DataCollectionRunSettings>" >> coverage.runsettings
-            echo "    <DataCollectors>" >> coverage.runsettings
-            echo "      <DataCollector friendlyName='XPlat code coverage'>" >> coverage.runsettings
-            echo "        <Configuration>" >> coverage.runsettings
-            echo "          <Format>cobertura,opencover</Format>" >> coverage.runsettings
-            echo "        </Configuration>" >> coverage.runsettings
-            echo "      </DataCollector>" >> coverage.runsettings
-            echo "    </DataCollectors>" >> coverage.runsettings
-            echo "  </DataCollectionRunSettings>" >> coverage.runsettings
-            echo "</RunSettings>" >> coverage.runsettings
-      
-    - name: Test
-      run: dotnet test TestProject/UnitTests.csproj --settings coverage.runsettings
-      
-    - name: Install Report Generator
-      run: dotnet tool install -g dotnet-reportgenerator-globaltool
-      
-    - name: Generate Coverage Report
-      run: reportgenerator -reports:".\**\TestResults\**\coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
-
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: ${{ always() }}
-      with:
-          name: coverage-report
-          path: coverage/**
-
-    #Unit tests - xUnit
-    - name: Run Unit Tests and Save Plain Text Results
-      run: |
-          dotnet test TestProject/UnitTests.csproj --no-build --configuration Release  > ./TestResults/unit-tests.txt
-
-    #BDD tests - Specflow
-    - name: Run BDD Tests and Save Plain Text Results
-      run: |
-          dotnet test --filter BDDTestProject/BDDTestProject.csproj --no-build --configuration Release > ./TestResults/bdd-tests.txt
-
-    #Static code scan - Sonarcloud
+  #Static code scan - Sonarcloud
     - name: Install SonarCloud Scanner for .NET
       run: dotnet tool install --global dotnet-sonarscanner
 
@@ -159,6 +117,47 @@ jobs:
           name: TestResults_UnitTest-BDD-SonarCloud
           path: ./TestResults
           retention-days: 7
+
+    #Coverage report - VS solution only allows one runsetting file and that's used for Selenium tests, need to create one on the fly for coverage..
+    - name: Create Runsettings File
+      run: |
+            echo "<?xml version='1.0' encoding='utf-8' ?>" >> coverage.runsettings
+            echo "<RunSettings>" >> coverage.runsettings
+            echo "   <DataCollectionRunSettings>" >> coverage.runsettings
+            echo "    <DataCollectors>" >> coverage.runsettings
+            echo "      <DataCollector friendlyName='XPlat code coverage'>" >> coverage.runsettings
+            echo "        <Configuration>" >> coverage.runsettings
+            echo "          <Format>cobertura,opencover</Format>" >> coverage.runsettings
+            echo "        </Configuration>" >> coverage.runsettings
+            echo "      </DataCollector>" >> coverage.runsettings
+            echo "    </DataCollectors>" >> coverage.runsettings
+            echo "  </DataCollectionRunSettings>" >> coverage.runsettings
+            echo "</RunSettings>" >> coverage.runsettings
+      
+    - name: Test
+      run: dotnet test TestProject/UnitTests.csproj --settings coverage.runsettings
+      
+    - name: Install Report Generator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      
+    - name: Generate Coverage Report
+      run: reportgenerator -reports:".\**\TestResults\**\coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: ${{ always() }}
+      with:
+          name: coverage-report
+          path: coverage/**
+
+    #Unit tests - xUnit
+    - name: Run Unit Tests and Save Plain Text Results
+      run: |
+          dotnet test TestProject/UnitTests.csproj --no-build --configuration Release  > ./TestResults/unit-tests.txt
+
+    #BDD tests - Specflow
+    - name: Run BDD Tests and Save Plain Text Results
+      run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp/BDDTestProject.dll --no-build --configuration Release > ./TestResults/bdd-tests.txt
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
