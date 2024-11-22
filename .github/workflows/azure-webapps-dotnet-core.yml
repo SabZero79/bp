@@ -110,13 +110,6 @@ jobs:
           
           # Save the formatted output to a file
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
-          
-    - name: Upload Test Results as Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-          name: TestResults_UnitTest-BDD-SonarCloud
-          path: ./TestResults
-          retention-days: 7
 
     #Coverage report - VS solution only allows one runsetting file and that's used for Selenium tests, need to create one on the fly for coverage..
     - name: Create Runsettings File
@@ -157,6 +150,13 @@ jobs:
     #Unit tests - XUnite
     - name: Run BDD Tests and Save Plain Text Results
       run: dotnet test TestProject/UnitTests.csproj --no-build --configuration Release > ./TestResults/unit-tests.txt
+
+    - name: Upload Test Results as Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+          name: TestResults_UnitTest-BDD-SonarCloud
+          path: ./TestResults
+          retention-days: 7
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
