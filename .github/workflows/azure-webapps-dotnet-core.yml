@@ -82,7 +82,7 @@ jobs:
             echo "</RunSettings>" >> coverage.runsettings
       
     - name: Test
-      run: dotnet test TestProject/Unit_BDD_Tests.csproj --settings coverage.runsettings
+      run: dotnet test TestProject/UnitTests.csproj --settings coverage.runsettings
       
     - name: Install Report Generator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -100,12 +100,12 @@ jobs:
     #Unit tests - xUnit
     - name: Run Unit Tests and Save Plain Text Results
       run: |
-          dotnet test --filter "Category=Unit" --no-build --configuration Release  > ./TestResults/unit-tests.txt
+          dotnet test TestProject/UnitTests.csproj --no-build --configuration Release  > ./TestResults/unit-tests.txt
 
     #BDD tests - Specflow
     - name: Run BDD Tests and Save Plain Text Results
       run: |
-          dotnet test --filter "Category=BDD" --no-build --configuration Release > ./TestResults/bdd-tests.txt
+          dotnet test --filter BDDTestProject/BDDTestProject.csproj --no-build --configuration Release > ./TestResults/bdd-tests.txt
 
     #Static code scan - Sonarcloud
     - name: Install SonarCloud Scanner for .NET
