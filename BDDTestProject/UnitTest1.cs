@@ -1,8 +1,7 @@
-﻿using BPCalculator;
-using Xunit;
+using BPCalculator;
 using TechTalk.SpecFlow;
 
-namespace Unit_BDD_Tests.Features
+namespace BDDTestProject
 {
     [Binding]
     public class BloodPressureSteps
@@ -15,23 +14,20 @@ namespace Unit_BDD_Tests.Features
         {
             BP = new BloodPressure { Systolic = systolic };
         }
-
         [Given(@"the diastolic pressure is (.*)")]
         public void GivenTheDiastolicPressureIs(int diastolic)
         {
             BP.Diastolic = diastolic;
         }
-
         [When(@"I calculate the blood pressure category")]
         public void WhenICalculateTheBloodPressureCategory()
         {
             calculatedCategory = BP.CalculateBPCategory();
         }
-
         [Then(@"the category should be ""(.*)""")]
         public void ThenTheCategoryShouldBe(string expectedCategory)
         {
-            Assert.Equal(expectedCategory, calculatedCategory.ToString());
+            Assert.That(calculatedCategory.ToString(), Is.EqualTo(expectedCategory));
         }
     }
 }

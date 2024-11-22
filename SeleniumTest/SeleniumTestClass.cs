@@ -28,14 +28,14 @@ public class SeleniumTestBloodPressure
     [TestInitialize]
     public void SetUp()
     {
-        webAppUri = testContextInstance.Properties["webAppUri"].ToString();
-        if (string.IsNullOrEmpty(webAppUri))
-        {
-            throw new ArgumentNullException(nameof(webAppUri), "URL cannot be null.");
-        }
-        driver = new ChromeDriver();
-        js = (IJavaScriptExecutor)driver;
-        vars = new Dictionary<string, object>();
+            webAppUri = testContextInstance!=null ? testContextInstance.Properties["webAppUri"].ToString() : string.Empty;
+            if (string.IsNullOrEmpty(webAppUri))
+            {
+                throw new ArgumentNullException(nameof(webAppUri), "URL cannot be null.");
+            }
+            driver = new ChromeDriver();
+            js = (IJavaScriptExecutor)driver;
+            vars = new Dictionary<string, object>();
     }
     [TestCleanup]
     public void TearDown()

@@ -13,6 +13,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_LowBloodPressure()
         {
             BP.Systolic = 85;
@@ -21,6 +22,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_IdealBloodPressure()
         {
             BP.Systolic = 115;
@@ -29,6 +31,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_PreHighBloodPressure()
         {
             BP.Systolic = 125;
@@ -37,6 +40,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_HighBloodPressure_SystolicBoundary()
         {
             BP.Systolic = 140;
@@ -45,6 +49,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_HighBloodPressure_DiastolicBoundary()
         {
             BP.Systolic = 150;
@@ -53,6 +58,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_LowSystolicHighDiastolic()
         {
             BP.Systolic = 80;
@@ -61,6 +67,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_IdealSystolicLowDiastolic()
         {
             BP.Systolic = 110;
@@ -69,6 +76,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_PreHighSystolicIdealDiastolic()
         {
             BP.Systolic = 130;
@@ -77,6 +85,7 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculateBPCategory_HighSystolicLowDiastolic()
         {
             BP.Systolic = 145;

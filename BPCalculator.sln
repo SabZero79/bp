@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeleniumTest", "SeleniumTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unit_BDD_Tests", "TestProject\Unit_BDD_Tests.csproj", "{F3823584-E2A8-45C6-A060-319326B80856}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BDDTestProject", "BDDTestProject\BDDTestProject.csproj", "{BFEC48E6-0B28-42C7-93B5-21236F8B8AD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F3823584-E2A8-45C6-A060-319326B80856}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3823584-E2A8-45C6-A060-319326B80856}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3823584-E2A8-45C6-A060-319326B80856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFEC48E6-0B28-42C7-93B5-21236F8B8AD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFEC48E6-0B28-42C7-93B5-21236F8B8AD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFEC48E6-0B28-42C7-93B5-21236F8B8AD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFEC48E6-0B28-42C7-93B5-21236F8B8AD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
