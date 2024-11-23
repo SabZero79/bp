@@ -18,9 +18,12 @@ jobs:
           args: >
             -Dsonar.organization=sabzero79
             -Dsonar.projectKey=SabZero79_bp
+            -Dsonar.report.export.path=sonar-report
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
- 
 
-# secrets.SONAR_TOKEN secret in Github repo (generated when new project analysed on sonar cloud)
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with: 
+          name: sonarcloud-report
+          path: sonar-report
