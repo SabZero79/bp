@@ -43,15 +43,6 @@ export let options = {
 
 };
 
-/**
- * Get a random integer between `min` and `max`.
- * 
- * @param {number} min - min number
- * @param {number} max - max number
- * @return {number} a random integer
- */
-
-
 // Export a default function - this defines the entry point for your VUs,
 // similar to the main() function in many other languages.
 export default function () {
@@ -71,7 +62,7 @@ export default function () {
 
     check(response, {
         'is status 200': (r) => r.status === 200,
-        'response time < 500ms': (r) => r.timings.duration < 500,
+        'response time < 200ms': (r) => r.timings.duration < 200,
     });
 
     sleep(2); // Pause between iterations
