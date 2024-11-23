@@ -20,7 +20,7 @@ jobs:
             -Dsonar.projectKey=SabZero79_bp
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
  
 
 # secrets.SONAR_TOKEN secret in Github repo (generated when new project analysed on sonar cloud)
