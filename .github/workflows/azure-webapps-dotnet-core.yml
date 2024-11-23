@@ -83,7 +83,7 @@ jobs:
           
     - name: Build Project
       shell: powershell
-      run: dotnet build D:\a\bp\bp\BPCalculator/BPCalculator.csproj
+      run: dotnet build D:\a\bp\bp\BPCalculator\BPCalculator.csproj
 
     - name: Run SonarCloud Code Analysis (End)
       env:
