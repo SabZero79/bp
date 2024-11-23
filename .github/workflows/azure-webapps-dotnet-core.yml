@@ -58,6 +58,9 @@ jobs:
         
     - name: Install dependencies
       run: dotnet restore
+      
+    - name: Build for Release
+      run: dotnet build --configuration Release
 
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
@@ -107,7 +110,6 @@ jobs:
           
           # Save the formatted output to a file
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
-
     #Coverage report - VS solution only allows one runsetting file and that's used for Selenium tests, need to create one on the fly for coverage..
     - name: Create Runsettings File
       run: |
