@@ -79,11 +79,11 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
-      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.projectBaseDir="D:\a\bp\bp\BPCalculator" /d:sonar.exclusions="D:\a\bp\bp\coverage"
+      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.exclusions="src/coverage/**"
           
     - name: Build Project
       shell: powershell
-      run: dotnet build D:\a\bp\bp\BPCalculator\BPCalculator.csproj
+      run: dotnet build
 
     - name: Run SonarCloud Code Analysis (End)
       env:
