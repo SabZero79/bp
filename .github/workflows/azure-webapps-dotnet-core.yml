@@ -58,9 +58,6 @@ jobs:
         
     - name: Install dependencies
       run: dotnet restore
-      
-    - name: Build for Release
-      run: dotnet build --configuration Release
 
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
@@ -77,8 +74,8 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
-      run: |
-          dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
+      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.exclusions="**/coverage/**"
+          
     - name: Build Project
       shell: powershell
       run: dotnet build
@@ -87,7 +84,7 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
-      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}"
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" 
           
     - name: Save SonarCloud Report to Text File
       shell: powershell
