@@ -11,7 +11,7 @@ on:
  
 
 jobs:
-  Dependency_Check:
+  Dependency_Check_Sonar_Cloud_Scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,6 +44,16 @@ jobs:
         with:
            name: Dependency Check report
            path: ${{github.workspace}}/reports
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=sabzero79
+            -Dsonar.projectKey=SabZero79_bp
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
 
   Unit_BDD_Sonar_Tests_Coverage:                                         
     runs-on: windows-latest                         # runner
