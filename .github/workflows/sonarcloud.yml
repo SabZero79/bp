@@ -12,18 +12,15 @@ jobs:
         with:
           fetch-depth: 0  
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.organization=sabzero79
-            -Dsonar.projectKey=SabZero79_bp
-            -Dsonar.report.export.path=sonar-report
-        env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-
-      - name: Upload Report
+        run: |
+          sonar-scanner \
+            -Dsonar.organization=sabzero79 \
+            -Dsonar.projectKey=SabZero79_bp \
+            -Dsonar.login=${{ secrets.SONARCLOUD_SECRET }} \
+            -Dsonar.report.export.path=sonar-report.json
+            
+      - name: Upload SonarCloud Report
         uses: actions/upload-artifact@v3
-        with: 
+        with:
           name: sonarcloud-report
-          path: sonar-report
+          path: sonar-report.json
