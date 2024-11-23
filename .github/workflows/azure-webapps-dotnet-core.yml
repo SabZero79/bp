@@ -79,7 +79,7 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
-      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.exclusions="src/coverage/**"
+      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.exclusions="D:\a\bp\bp\coverage\"
           
     - name: Build Project
       shell: powershell
