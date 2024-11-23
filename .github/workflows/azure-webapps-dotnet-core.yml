@@ -71,16 +71,19 @@ jobs:
     - name: Add .NET tools to PATH
       shell: powershell
       run: echo "$Env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8
-    
+      
+    - name: Debug Paths
+      run: ls -R
+      
     - name: Run SonarCloud Code Analysis (Begin)
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
-      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.projectBaseDir="./BPCalculator"
+      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" #/d:sonar.projectBaseDir="./BPCalculator"
           
     - name: Build Project
       shell: powershell
-      run: dotnet build ./BPCalculator/BPCalculator.csproj
+      run: dotnet build #./BPCalculator/BPCalculator.csproj
 
     - name: Run SonarCloud Code Analysis (End)
       env:
