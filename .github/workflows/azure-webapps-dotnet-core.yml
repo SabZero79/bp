@@ -3,7 +3,6 @@ name: BloodPressure_SABI
 env:
   AZURE_WEBAPP_NAME: BloodPressureApp               # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: 'publish'
-  MIN_LINE_RATE: 10  
 
 on:
  workflow_dispatch:        
@@ -77,7 +76,7 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       shell: powershell
-      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.exclusions="**/coverage/**"
+      run: dotnet sonarscanner begin
           
     - name: Build Project
       shell: powershell
@@ -110,6 +109,7 @@ jobs:
           
           # Save the formatted output to a file
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
+          
     #Coverage report - VS solution only allows one runsetting file and that's used for Selenium tests, need to create one on the fly for coverage..
     - name: Create Runsettings File
       run: |
