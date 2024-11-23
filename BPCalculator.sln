@@ -7,9 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPCalculator", "BPCalculato
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeleniumTest", "SeleniumTest\SeleniumTest.csproj", "{4089F722-1468-483F-86C3-B9D3D21C221A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unit_BDD_Tests", "TestProject\UnitTests.csproj", "{F3823584-E2A8-45C6-A060-319326B80856}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "TestProject\UnitTests.csproj", "{F3823584-E2A8-45C6-A060-319326B80856}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BDDTestProject", "BDDTestProject\BDDTestProject.csproj", "{BFEC48E6-0B28-42C7-93B5-21236F8B8AD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BDDTestProject", "BDDTestProject\BDDTestProject.csproj", "{BFEC48E6-0B28-42C7-93B5-21236F8B8AD2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "K6Tests", "K6Tests", "{91B6D8CB-6366-4AAF-81D0-C25B6C0F5F3D}"
+	ProjectSection(SolutionItems) = preProject
+		perf1.js = perf1.js
+		perf2.js = perf2.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
