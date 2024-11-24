@@ -1,14 +1,19 @@
-using BPCalculator;
+﻿using BPCalculator;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
 namespace BDDTestProject
 {
     [Binding]
-    [Scope(Tag = "BDD")]
-    public class BloodPressureSteps
+    [Scope(Tag = "FeatureTest")]
+    public class FeatureTest
     {
         public BloodPressure BP { get; private set; }
-        private BPCategory calculatedCategory;
+        private int PulsePressure;
 
         [Given(@"the systolic pressure is (.*)")]
         public void GivenTheSystolicPressureIs(int systolic)
@@ -20,15 +25,15 @@ namespace BDDTestProject
         {
             BP.Diastolic = diastolic;
         }
-        [When(@"I calculate the blood pressure category")]
+        [When(@"I calculate the pulse pressure")]
         public void WhenICalculateTheBloodPressureCategory()
         {
-            calculatedCategory = BP.CalculateBPCategory();
+            PulsePressure = BP.CalculatePulsePressure();
         }
-        [Then(@"the category should be ""(.*)""")]
-        public void ThenTheCategoryShouldBe(string expectedCategory)
+        [Then(@"the value should be (.*)")]
+        public void ThenThePlusePressureShouldBe(int expected)
         {
-            Assert.That(calculatedCategory.ToString(), Is.EqualTo(expectedCategory));
+            Assert.That(PulsePressure, Is.EqualTo(expected));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 
@@ -19,12 +21,24 @@ namespace BPCalculator
         public const int SystolicMax = 190;
         public const int DiastolicMin = 40;
         public const int DiastolicMax = 100;
+       
 
         [Range(SystolicMin, SystolicMax, ErrorMessage = "Invalid Systolic Value")]
         public int Systolic { get; set; }                       // mmHG
 
         [Range(DiastolicMin, DiastolicMax, ErrorMessage = "Invalid Diastolic Value")]
         public int Diastolic { get; set; }                      // mmHG
+
+        // Calculate Pulse pressure
+        [DisplayName("Pulse Pressure")]
+        public int? PulsePressure 
+        {
+            get
+            {
+                return CalculatePulsePressure();
+            }
+                
+         }
 
         // calculate BP category
         public BPCategory Category
@@ -65,10 +79,10 @@ namespace BPCalculator
             return category;
         }
         // New feature - calculate pulse pressure -
-        // To calculate your pulse pressure, subtract the diastolic blood pressure from the systolic blood pressure
-        //public int CalculatePulsePressure()
-        //{
-        //    return Systolic - Diastolic;
-        //}
+        //To calculate your pulse pressure, subtract the diastolic blood pressure from the systolic blood pressure
+        public int CalculatePulsePressure()
+        {
+            return Systolic - Diastolic;
+        }
     }
 }

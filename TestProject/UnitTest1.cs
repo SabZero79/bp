@@ -174,9 +174,9 @@ namespace Unit_BDD_Tests
             Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
         }
 
-        // Uncomment these if you want to include pulse pressure tests
-        /*
+        // Feature - Pulse Pressure Tests
         [Fact]
+        [Trait("Category", "Unit")]
         public void CalculatePulsePressure_ShouldReturnCorrectValue()
         {
             BP.Systolic = 120;
@@ -185,12 +185,48 @@ namespace Unit_BDD_Tests
         }
 
         [Fact]
-        public void CalculatePulsePressure_HandlesLowValues()
+        [Trait("Category", "Unit")]
+        public void CalculatePulsePressure_HandlesNormalValues()
         {
-            BP.Systolic = 70;
-            BP.Diastolic = 40;
+            BP.Systolic = 90;
+            BP.Diastolic = 50;
+            Assert.Equal(40, BP.CalculatePulsePressure());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculatePulsePressure_HandlesHighValues()
+        {
+            BP.Systolic = 180;
+            BP.Diastolic = 110;
+            Assert.Equal(70, BP.CalculatePulsePressure());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculatePulsePressure_HandlesMinimumValues()
+        {
+            BP.Systolic = BloodPressure.SystolicMin;
+            BP.Diastolic = BloodPressure.DiastolicMin;
             Assert.Equal(30, BP.CalculatePulsePressure());
         }
-        */
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculatePulsePressure_HandlesMaximumValues()
+        {
+            BP.Systolic = BloodPressure.SystolicMax;
+            BP.Diastolic = BloodPressure.DiastolicMax;
+            Assert.Equal(90, BP.CalculatePulsePressure());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculatePulsePressure_HandlesLowValues()
+        {
+            BP.Systolic = 100;
+            BP.Diastolic = 90;
+            Assert.Equal(10, BP.CalculatePulsePressure());
+        }
     }
 }
