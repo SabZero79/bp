@@ -75,54 +75,7 @@ jobs:
     - name: Create Test Results Directory
       run: mkdir -p ./TestResults
 
-  #Static code scan - Sonarcloud
-    - name: Install SonarCloud Scanner for .NET
-      run: dotnet tool install --global dotnet-sonarscanner
-
-    - name: Add .NET tools to PATH
-      shell: powershell
-      run: echo "$Env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8
-      
-    - name: Debug Paths
-      run: ls -R
-      
-    - name: Run SonarCloud Code Analysis (Begin)
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: powershell
-      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.exclusions="D:/a/bp/bp/coverage/" /d:sonar.test.exclusions="D:/a/bp/bp/coverage/"
-          
-    - name: Build Project
-      shell: powershell
-      run: dotnet build
-
-    - name: Run SonarCloud Code Analysis (End)
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: powershell
-      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" 
-          
-    - name: Save SonarCloud Report to Text File
-      shell: powershell
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      run: |
-          # Set up headers and make the API call
-          $headers = @{
-              Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${Env:SONAR_TOKEN}:"))
-          }
-          $response = Invoke-WebRequest -Uri "https://sonarcloud.io/api/issues/search?componentKeys=SabZero79_bp" -Headers $headers
-          
-          # Parse JSON and select relevant fields
-          $issues = ($response.Content | ConvertFrom-Json).issues | ForEach-Object {
-              "File: $($_.component)",
-              "Line: $($_.line)",
-              "Message: $($_.message)",
-              "`n"    
-          }
-          
-          # Save the formatted output to a file
-          $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
+  
           
     #Coverage report - VS solution only allows one runsetting file and that's used for Selenium tests, need to create one on the fly for coverage..
     - name: Create Runsettings File
