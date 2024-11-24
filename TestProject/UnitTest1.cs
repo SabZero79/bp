@@ -156,6 +156,23 @@ namespace Unit_BDD_Tests
             Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
         }
 
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_HighDiastolicGreater90()
+        {
+            BP.Systolic = 115;
+            BP.Diastolic = 95;
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_HighDiastolicGreater90_SecondCheck()
+        {
+            BP.Systolic = 115;
+            BP.Diastolic = 100;
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
+        }
 
         // Uncomment these if you want to include pulse pressure tests
         /*
