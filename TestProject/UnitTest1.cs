@@ -93,6 +93,70 @@ namespace Unit_BDD_Tests
             Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
         }
 
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_IdealDiastolicBoundary()
+        {
+            BP.Systolic = 85;
+            BP.Diastolic = 75;
+            Assert.Equal(BPCategory.Ideal, BP.CalculateBPCategory());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_PreHighDiastolicBoundary()
+        {
+            BP.Systolic = 85;
+            BP.Diastolic = 85;
+            Assert.Equal(BPCategory.PreHigh, BP.CalculateBPCategory());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_IdealSystolicBoundary()
+        {
+            BP.Systolic = 110;
+            BP.Diastolic = 75;
+            Assert.Equal(BPCategory.Ideal, BP.CalculateBPCategory());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_PreHighSystolicBoundary()
+        {
+            BP.Systolic = 115;
+            BP.Diastolic = 85;
+            Assert.Equal(BPCategory.PreHigh, BP.CalculateBPCategory());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_HighSystolicBoundary()
+        {
+            BP.Systolic = 135;
+            BP.Diastolic = 95;
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_PreHighDiastolicBoundary_SecondCheck()
+        {
+            BP.Systolic = 125;
+            BP.Diastolic = 85;
+            Assert.Equal(BPCategory.PreHigh, BP.CalculateBPCategory());
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void CalculateBPCategory_HighDiastolicBoundary_SecondCheck()
+        {
+            BP.Systolic = 125;
+            BP.Diastolic = 95;
+            Assert.Equal(BPCategory.High, BP.CalculateBPCategory());
+        }
+
+
         // Uncomment these if you want to include pulse pressure tests
         /*
         [Fact]
