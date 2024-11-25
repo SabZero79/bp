@@ -1,7 +1,7 @@
 name: BloodPressure_SABI                                  
 
 env:
-  AZURE_WEBAPP_NAME: BloodPressureApp               # set this to your application's name
+  AZURE_WEBAPP_NAME: BloodPressureAppSabi               # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: 'publish'
   URI: https://bloodpressureappsabi-adfycva4hqamanee.northeurope-01.azurewebsites.net/  
 
