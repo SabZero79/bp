@@ -46,7 +46,7 @@ export let options = {
 // Export a default function - this defines the entry point for your VUs,
 // similar to the main() function in many other languages.
 export default function () {
-    const url = 'https://bloodpressureapp-fnetd6gfg4cbfzex.northeurope-01.azurewebsites.net';
+    const url = 'https://bloodpressureappsabi-adfycva4hqamanee.northeurope-01.azurewebsites.net';
     const payload = JSON.stringify({
         systolic: 120,
         diastolic: 80
