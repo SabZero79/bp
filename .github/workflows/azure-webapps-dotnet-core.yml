@@ -3,7 +3,8 @@ name: BloodPressure_SABI
 env:
   AZURE_WEBAPP_NAME: BloodPressureAppSabi               # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: 'publish'
-  URI: https://bloodpressureappsabi-adfycva4hqamanee.northeurope-01.azurewebsites.net/  
+  URI: https://bloodpressureappsabi-adfycva4hqamanee.northeurope-01.azurewebsites.net/
+  URIS: https://bloodpressureappsabi-staging-erape7cyavdcdkgk.northeurope-01.azurewebsites.net
 
 on:
  workflow_dispatch:        
@@ -127,7 +128,7 @@ jobs:
           needs: Unit_BDD_Sonar_Tests_Coverage
           environment:
             name: QA
-            url: https://bloodpressureappsabi-staging-erape7cyavdcdkgk.northeurope-01.azurewebsites.net                               
+            url:  ${{ env.URIS }}                                
           runs-on: windows-latest
           steps:
           - uses: actions/checkout@v4
@@ -141,7 +142,7 @@ jobs:
             uses: azure/webapps-deploy@v2
             with: 
               app-name: ${{ env.AZURE_WEBAPP_NAME }}                            
-              publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}     # Define secret variable in environment
+              publish-profile: ${{ secrets.AZURE_SECRET_STAGING  }}     # Define secret variable in environment
               slot-name: staging
               package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
 
@@ -158,10 +159,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v4
-  
-      - name: Ensure working directory
-        run: ls -R
-        
+      
       - name: Pull Docker image for k6
         run: docker pull grafana/k6
   
@@ -177,7 +175,7 @@ jobs:
         run: docker pull zaproxy/zap-weekly
   
       - name: Run baseline scan
-        run: docker run -v /report:/zap/wrk/:rw --user root -t zaproxy/zap-weekly zap-baseline.py -t ${{env.URI}} -I -r zapreport.html
+        run: docker run -v /report:/zap/wrk/:rw --user root -t zaproxy/zap-weekly zap-baseline.py -t ${{env.URIS}} -I -r zapreport.html
     
       - uses: actions/upload-artifact@v4
         name: upload ZAP report
@@ -188,7 +186,7 @@ jobs:
       # login to Azure account
       - uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}                         # JSON objects which represents service principal
+          creds: ${{ secrets.AZURE_SECRET_PROD }}
   
       # blue/green
       - name: swap staging and production slots
