@@ -2,6 +2,6 @@
 <RunSettings>    
   <!-- Parameters used by tests at runtime -->  
   <TestRunParameters>  
-    <Parameter name="webAppUri" value="https://bloodpressureapp-fnetd6gfg4cbfzex.northeurope-01.azurewebsites.net/" />  
+    <Parameter name="webAppUri" value="https://bloodpressureappsabi-staging-erape7cyavdcdkgk.northeurope-01.azurewebsites.net" />  
   </TestRunParameters>
 </RunSettings> 
