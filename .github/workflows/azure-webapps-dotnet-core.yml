@@ -91,9 +91,10 @@ jobs:
             echo "    </DataCollectors>" >> coverage.runsettings
             echo "  </DataCollectionRunSettings>" >> coverage.runsettings
             echo "</RunSettings>" >> coverage.runsettings
-      
+
+    #Unit tests - XUnit + Code Coverage
     - name: Test
-      run: dotnet test TestProject/UnitTests.csproj --settings coverage.runsettings
+      run: dotnet test TestProject/UnitTests.csproj --settings coverage.runsettings > ./TestResults/unit-tests.txt
       
     - name: Install Report Generator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -108,13 +109,9 @@ jobs:
           name: coverage-report
           path: coverage/**
 
-    #BDD tests - Specflow
+    #BDD tests - NUnit + Specflow
     - name: Run Unit Tests and Save Plain Text Results
       run: dotnet test BDDTestProject/BDDTestProject.csproj --no-build --configuration Release  > ./TestResults/bdd-tests.txt
-
-    #Unit tests - XUnit
-    - name: Run BDD Tests and Save Plain Text Results
-      run: dotnet test TestProject/UnitTests.csproj --no-build --configuration Release > ./TestResults/unit-tests.txt
 
     - name: Upload Test Results as Artifacts
       uses: actions/upload-artifact@v4
@@ -146,7 +143,7 @@ jobs:
               slot-name: staging
               package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
 
-           # Run Selenium tests
+           # Run Selenium tests - MSTest
           - name: Run Selenium tests
             run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger "trx;LogFileName=Selenium-test.trx"
           - name: Upload Selenium Test Log as Artifact
