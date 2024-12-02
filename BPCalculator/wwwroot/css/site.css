@@ -1,71 +1,139 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
-}
-@media (min-width: 768px) {
-  html {
+﻿/* General Page Styling */
+html, body {
+    background-color: #1e3a5f; /* Deep, stylish blue */
+    color: #ffffff; /* White font for high contrast */
+    font-family: 'Roboto', sans-serif; /* Modern font */
+    font-weight: bold; /* Bold text */
     font-size: 16px;
-  }
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+/* Navbar Brand */
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-word;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #d0e6ff; /* Light blue text for contrast */
+    transition: color 0.3s ease-in-out;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
+    a.navbar-brand:hover {
+        color: #ffffff; /* Full white on hover */
+    }
+
+/* Links */
+a {
+    color: #d0e6ff; /* Light blue links */
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
 }
 
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    a:hover {
+        color: #ffffff; /* White on hover */
+        text-decoration: underline;
+    }
+
+/* Buttons */
+.btn-primary, input[type="submit"] {
+    color: #ffffff; /* White text */
+    background-color: #457b9d; /* Muted blue */
+    border-color: #1d3557; /* Dark blue */
+    border-radius: 4px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+    .btn-primary:hover {
+        background-color: #1d3557;
+        border-color: #457b9d;
+    }
+
+/* Header */
+header {
+    background-color: #244a73; /* Consistent blue background */
+    color: #ffffff; /* White text */
+    padding: 1.5rem 0;
+    text-align: center;
+    margin: 0; /* Remove any default margins */
+    border-bottom: 2px solid #1d3557; /* Optional: Add a border for separation */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+    /* Reset potential padding/margin issues for the first element inside the header */
+    header * {
+        margin: 0;
+        padding: 0;
+    }
+
+/* Footer */
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #1d3557; /* Dark blue footer */
+    color: #ffffff;
+    text-align: center;
+    padding: 0.1rem 0; 
+    font-size: 0.85rem; /* Slightly smaller text size */
+    border-top: 2px solid #244a73;
+}
+
+/* Container for Content */
+.container {
+    padding: 2rem;
+}
+
+/* Borders */
+.border-top {
+    border-top: 2px solid #244a73; /* Light blue border */
+}
+
+.border-bottom {
+    border-bottom: 2px solid #244a73;
+}
+
+/* Shadows for Depth */
+.box-shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Policy Button */
+button.accept-policy {
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: #457b9d;
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+    button.accept-policy:hover {
+        background-color: #1d3557;
+    }
+
+/* Larger Font for Labels */
+.control-label {
+    font-size: 1.25rem; /* Adjust as needed, e.g., 1.5rem for even larger text */
+    font-weight: bold; /* Optional: Makes the text bold */
+}
+
+/* Larger Text */
+.text-large {
+    font-size: 1.5rem; /* Adjust as needed */
+    font-weight: bold; /* Optional: Makes it bold */
+}
+
+/* Green Text */
+.text-green {
+    color: green;
+}
+
+/* Red Text */
+.text-red {
+    color: red;
 }

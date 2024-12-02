@@ -6,7 +6,7 @@
 }
 
 
-<h4>BP Category Calculator- Szabolcs VARGA</h4>
+<h4>BP Category Calculator - Szabolcs VARGA - Feature Branch</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -32,15 +32,16 @@
                 </div>
             }
             <br />
-            <br />
             <div class="form-group">
                 <label asp-for="BP.PulsePressure" class="control-label"></label>
             </div>
             @if (ViewData.ModelState.IsValid)
             {
                 <div class="form-group">
-                    @Html.DisplayFor(model => model.BP.PulsePressure, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
+                <span class="text-medium @(Model.BP.PulsePressure <= 40 ? "text-green" : "text-red")">
+                     @Model.BP.PulsePressure
+                </span>
+            </div>
             }
             <div class="form-group">
                 <label>A normal resting pulse pressure is around 40 mm Hg. 
