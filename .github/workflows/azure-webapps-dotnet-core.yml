@@ -115,56 +115,10 @@ jobs:
     - name: Run Unit Tests and Save Plain Text Results
       run: dotnet test BDDTestProject/BDDTestProject.csproj --no-build --configuration Release  > ./TestResults/bdd-tests.txt
 
-    # Sonar cloud run 2 with a txt exctract
-    - name: Install SonarCloud Scanner for .NET
-      run: dotnet tool install --global dotnet-sonarscanner
-
-    - name: Add .NET tools to PATH
-      shell: powershell
-      run: echo "$Env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8
-      
-    - name: Run SonarCloud Code Analysis (Begin)
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: powershell
-      run: dotnet sonarscanner begin /k:"SabZero79_bp" /o:"sabzero79" /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" /d:sonar.exclusions="src/coverage/**"
-          
-    - name: Build Project
-      shell: powershell
-      run: dotnet build
-
-    - name: Run SonarCloud Code Analysis (End)
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      shell: powershell
-      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARCLOUD_SECRET }}" 
-          
-    - name: Save SonarCloud Report to Text File
-      shell: powershell
-      env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
-      run: |
-          # Set up headers and make the API call
-          $headers = @{
-              Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${Env:SONAR_TOKEN}:"))
-          }
-          $response = Invoke-WebRequest -Uri "https://sonarcloud.io/api/issues/search?componentKeys=SabZero79_bp" -Headers $headers
-          
-          # Parse JSON and select relevant fields
-          $issues = ($response.Content | ConvertFrom-Json).issues | ForEach-Object {
-              "File: $($_.component)",
-              "Line: $($_.line)",
-              "Message: $($_.message)",
-              "`n"    
-          }
-          
-          # Save the formatted output to a file
-          $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
-
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
       with:
-          name: TestResults_UnitTest-BDD-SonarCloud
+          name: TestResults_UnitTest-BDD
           path: ./TestResults
 
   K6_Load_and_ZAP_Tests:
