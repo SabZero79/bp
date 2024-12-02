@@ -237,9 +237,6 @@ jobs:
           # blue/green
           - name: swap staging and production slots
             run: |
-              az webapp deployment slot swap -n BloodPressureAppSabi -ga -g sabi_azure --slot staging --target-slot production 
-
-
-
+              az webapp deployment slot swap -n BloodPressureAppSabi -ga -g sabi_azure --slot staging --target-slot production
 
           
