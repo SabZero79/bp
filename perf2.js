@@ -16,7 +16,7 @@ export let options = {
     // then ramp down to 0 over a minute i.e. ramp-up pattern of "load"
     stages: [
         { duration: "1m", target: 20 },            // 1 new vu every 3 seconds
-        { duration: "1m", target: 20 },
+        { duration: "1m", target: 50 },
         { duration: "1m", target: 0 }             // 1 less vu every 3 seconds
     ],
 
@@ -31,15 +31,7 @@ export let options = {
 
     // Don't save the bodies of HTTP responses by default, for improved performance
     // Can be overwritten by setting the `responseType` option to `text` or `binary` for individual requests
-    discardResponseBodies: false,
-    // overriden below for GET
-
-    cloud: {
-        distribution: {
-            distributionLabel1: { loadZone: 'amazon:us:ashburn', percent: 50 },
-            distributionLabel2: { loadZone: 'amazon:ie:dublin', percent: 50 },
-        },
-    },
+    discardResponseBodies: false
 
 };
 
@@ -67,7 +59,3 @@ export default function () {
 
     sleep(2); // Pause between iterations
 }
-
-// to run on Docker:
-// docker pull grafana/k6
-// docker run -i grafana/k6 run - <perf2.js

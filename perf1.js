@@ -31,15 +31,7 @@ export let options = {
 
     // Don't save the bodies of HTTP responses by default, for improved performance
     // Can be overwritten by setting the `responseType` option to `text` or `binary` for individual requests
-    discardResponseBodies: true,
-
-    cloud: {
-        distribution: {
-            distributionLabel1: { loadZone: 'amazon:us:ashburn', percent: 50 },
-            distributionLabel2: { loadZone: 'amazon:ie:dublin', percent: 50 },
-        },
-    },
-
+    discardResponseBodies: true
 };
 
 // Export a default function - this defines the entry point for your VUs,
@@ -54,14 +46,3 @@ export default function () {
     // "think" for 3 seconds
     sleep(2);
 }
-
-// to run on Docker:
-// docker pull docker pull grafana/k6
-// docker run -i docker pull grafana/k6 run - <perf1.js
-
-
-// or install on machine and:
-// k6 run perf1.js
-// k6 login cloud - token ..........
-// k6 cloud perf1.js
-// k6 run --out cloud perf1.js 
