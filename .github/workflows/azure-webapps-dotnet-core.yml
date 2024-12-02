@@ -57,7 +57,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
 
-  Unit_BDD_Sonar_Tests_Coverage:                                         
+  Unit_BDD_Sonar_Tests_Coverage:
+    name: Unit Test, BDD Test, Coverage Report and Sonar Test text file
+    needs: Dependency_Check_Sonar_Cloud_Scan
     runs-on: windows-latest                         # runner
     steps:
     - uses: actions/checkout@v4
@@ -167,6 +169,8 @@ jobs:
           $issues -join "`n" | Out-File -FilePath ./TestResults/sonar-report.txt -Encoding utf8
 
   K6_Load_and_ZAP_Tests:
+      name: K6 Load Test and ZAP Test
+      needs: Unit_BDD_Sonar_Tests_Coverage
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v4
@@ -196,7 +200,7 @@ jobs:
 
   deploy_test_blue_green:                                             
           name: deploy to staging slot, run E2E tests, swap slots
-          needs: Unit_BDD_Sonar_Tests_Coverage
+          needs: K6_Load_and_ZAP_Tests
           environment:
             name: QA
             url:  ${{ env.URIS }}                                
