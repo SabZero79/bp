@@ -1,0 +1,46 @@
+name: Deploy onto both slots                                 
+
+env:
+  AZURE_WEBAPP_NAME: BloodPressureAppSabi               # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'
+  URI: https://bloodpressureappsabi-adfycva4hqamanee.northeurope-01.azurewebsites.net
+  URIS: https://bloodpressureappsabi-staging-erape7cyavdcdkgk.northeurope-01.azurewebsites.net
+
+on:
+ workflow_dispatch:        
+# push:                                             #  workflow_dispatch for manually triggered
+#   branches: [ master ]
+ 
+
+jobs:
+ deploy_test_blue_green:                                             
+          name: deploy to staging slot, run E2E tests, swap slots
+          environment:
+            name: QA
+            url:  ${{ env.URIS }}                                
+          runs-on: windows-latest
+          steps:
+          - uses: actions/checkout@v4
+      
+          # publish web app ready for deployment
+          - name: Publish web app
+            run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp
+          
+          # Deploy to Azure app service to staging slot using publish profile for staging slot
+          - name: Run Azure webapp deploy action using publish profile credentials
+            uses: azure/webapps-deploy@v2
+            with: 
+              app-name: ${{ env.AZURE_WEBAPP_NAME }}                            
+              publish-profile: ${{ secrets.AZURE_SECRET_STAGING  }}     # Define secret variable in environment
+              slot-name: staging
+              package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+
+              # Deploy to Azure app service to production slot using publish profile for production slot
+          - name: Run Azure webapp deploy action using publish profile credentials
+            uses: azure/webapps-deploy@v2
+            with: 
+              app-name: ${{ env.AZURE_WEBAPP_NAME }}                            
+              publish-profile: ${{ secrets.AZURE_SECRET_PROD  }}     # Define secret variable in environment
+              slot-name: production
+              package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+              
