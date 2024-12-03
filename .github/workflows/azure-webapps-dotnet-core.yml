@@ -121,39 +121,9 @@ jobs:
           name: TestResults_UnitTest-BDD
           path: ./TestResults
 
-  K6_Load_and_ZAP_Tests:
-      name: K6 Load Test and ZAP Test
-      needs: Unit_BDD_Sonar_Tests_Coverage
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@v4
-      
-      - name: Pull Docker image for k6
-        run: docker pull grafana/k6
-  
-      - name: Run k6 load test, capture report
-        run: docker run -i grafana/k6 run - <perf2.js > k6report.txt || true
-        
-      - uses: actions/upload-artifact@v4
-        with:
-          name: k6report
-          path: k6report.txt
-          
-      - name: Pull Docker image for ZAP
-        run: docker pull zaproxy/zap-weekly
-  
-      - name: Run baseline scan
-        run: docker run -v /report:/zap/wrk/:rw --user root -t zaproxy/zap-weekly zap-baseline.py -t ${{env.URIS}} -I -r zapreport.html
-    
-      - uses: actions/upload-artifact@v4
-        name: upload ZAP report
-        with:
-          name: ZAPreport
-          path: /report/zapreport.html
-
   deploy_test_blue_green:                                             
           name: deploy to staging slot, run E2E tests, swap slots
-          needs: K6_Load_and_ZAP_Tests
+          needs: Unit_BDD_Sonar_Tests_Coverage
           environment:
             name: QA
             url:  ${{ env.URIS }}                                
@@ -182,14 +152,45 @@ jobs:
             with:
               name: Selenium-Test-Log
               path: ./TestResults/Selenium-test.trx
+
+  K6_Load_and_ZAP_Tests:
+      name: K6 Load Test and ZAP Test
+      needs: deploy_test_blue_green
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+      
+      - name: Pull Docker image for k6
+        run: docker pull grafana/k6
+  
+      - name: Run k6 load test, capture report
+        run: docker run -i grafana/k6 run - <perf2.js > k6report.txt || true
+        
+      - uses: actions/upload-artifact@v4
+        with:
+          name: k6report
+          path: k6report.txt
+          
+      - name: Pull Docker image for ZAP
+        run: docker pull zaproxy/zap-weekly
+  
+      - name: Run baseline scan
+        run: docker run -v /report:/zap/wrk/:rw --user root -t zaproxy/zap-weekly zap-baseline.py -t ${{env.URIS}} -I -r zapreport.html
+    
+      - uses: actions/upload-artifact@v4
+        name: upload ZAP report
+        with:
+          name: ZAPreport
+          path: /report/zapreport.html
+        
           # login to Azure account
-          - uses: azure/login@v2
-            with:
-              creds: ${{ secrets.AZURE_SECRET_PROD }}
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_SECRET_PROD }}
       
           # blue/green
-          - name: swap staging and production slots
-            run: |
-              az webapp deployment slot swap -n BloodPressureAppSabi -ga -g sabi_azure --slot staging --target-slot production
+      - name: swap staging and production slots
+        run: |
+          az webapp deployment slot swap -n BloodPressureAppSabi -ga -g sabi_azure --slot staging --target-slot production
 
           
