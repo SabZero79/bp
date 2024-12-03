@@ -29,6 +29,16 @@ jobs:
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=sabzero79
+            -Dsonar.projectKey=SabZero79_bp
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
       
       - name: DependencyCheck
         uses: dependency-check/Dependency-Check_Action@main
@@ -46,16 +56,6 @@ jobs:
         with:
            name: Dependency Check report
            path: ${{github.workspace}}/reports
-
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.organization=sabzero79
-            -Dsonar.projectKey=SabZero79_bp
-        env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_SECRET }}
 
   Unit_BDD_Sonar_Tests_Coverage:
     name: Unit Test, BDD Test, Coverage Report and Sonar Test text file
