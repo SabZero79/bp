@@ -14,6 +14,7 @@ on:
 
 jobs:
   Dependency_Check_Sonar_Cloud_Scan:
+    name: Dependency Check and Sonar Cloud Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,7 +59,7 @@ jobs:
            path: ${{github.workspace}}/reports
 
   Unit_BDD_Sonar_Tests_Coverage:
-    name: Unit Test, BDD Test, Coverage Report and Sonar Test text file
+    name: Unit Test, BDD Test, Coverage Report
     needs: Dependency_Check_Sonar_Cloud_Scan
     runs-on: windows-latest                         # runner
     steps:
@@ -122,7 +123,7 @@ jobs:
           path: ./TestResults
 
   deploy_test_blue_green:                                             
-          name: deploy to staging slot, run E2E tests, swap slots
+          name: Deploy to staging slot, run E2E tests
           needs: Unit_BDD_Sonar_Tests_Coverage
           environment:
             name: QA
@@ -154,7 +155,7 @@ jobs:
               path: ./TestResults/Selenium-test.trx
 
   K6_Load_and_ZAP_Tests:
-      name: K6 Load Test and ZAP Test
+      name: K6 Load Test and ZAP Test, swap slots
       needs: deploy_test_blue_green
       runs-on: ubuntu-latest
       steps:
@@ -192,5 +193,3 @@ jobs:
       - name: swap staging and production slots
         run: |
           az webapp deployment slot swap -n BloodPressureAppSabi -ga -g sabi_azure --slot staging --target-slot production
-
-          
