@@ -21,15 +21,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
 
       - name: Restore Dependencies
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
+      - name: Build for Release
+        run: dotnet build --configuration Release
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -57,9 +57,6 @@ jobs:
         with:
            name: Dependency Check report
            path: ${{github.workspace}}/reports
-      
-      - name: Build for Release
-        run: dotnet build --configuration Release
   
       - name: Create Test Results Directory
         run: mkdir -p ./TestResults
