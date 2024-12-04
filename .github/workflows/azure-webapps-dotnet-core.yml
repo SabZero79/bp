@@ -13,8 +13,8 @@ on:
  
 
 jobs:
-  Dependency_Check_Sonar_Cloud_Scan:
-    name: Dependency Check and Sonar Cloud Scan
+  Dependency_Check_Sonar_Cloud_Scan_UnitTest_BDDTest_Coverage:
+    name: Dependency Check, Sonar Cloud Scan, Unit Test, BDD Test, Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -80,9 +80,6 @@ jobs:
       #Unit tests - XUnit + Code Coverage
       - name: Test with Coverage
         run: dotnet test TestProject/UnitTests.csproj --collect:"XPlat Code Coverage" --settings coverage.runsettings > ./TestResults/unit-tests.txt
-
-      - name: Search Workspace for Coverage Files
-        run: find . -name "*.coverage" -o -name "*.xml"
         
       - name: Install Report Generator
         run: dotnet tool install -g dotnet-reportgenerator-globaltool --version 4.*
@@ -109,7 +106,7 @@ jobs:
 
   deploy_test_blue_green:                                             
           name: Deploy to staging slot, run E2E tests
-          needs: Dependency_Check_Sonar_Cloud_Scan
+          needs: Dependency_Check_Sonar_Cloud_Scan_UnitTest_BDDTest_Coverage
           environment:
             name: QA
             url:  ${{ env.URIS }}                                
