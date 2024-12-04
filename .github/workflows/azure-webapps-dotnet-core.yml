@@ -78,11 +78,14 @@ jobs:
               echo "</RunSettings>" >> coverage.runsettings
   
       #Unit tests - XUnit + Code Coverage
-      - name: Test
-        run: dotnet test TestProject/UnitTests.csproj --settings coverage.runsettings > ./TestResults/unit-tests.txt
+      - name: Test with Coverage
+        run: dotnet test TestProject/UnitTests.csproj --collect:"XPlat Code Coverage" --settings coverage.runsettings > ./TestResults/unit-tests.txt
+
+      - name: List TestResults Directory
+        run: ls -R TestResults
         
       - name: Install Report Generator
-        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool --version 4.*
         
       - name: Generate Coverage Report
         run: reportgenerator -reports:".\**\TestResults\**\coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
