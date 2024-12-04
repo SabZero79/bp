@@ -81,14 +81,14 @@ jobs:
       - name: Test with Coverage
         run: dotnet test TestProject/UnitTests.csproj --collect:"XPlat Code Coverage" --settings coverage.runsettings > ./TestResults/unit-tests.txt
 
-      - name: List TestResults Directory
-        run: ls -R TestResults
+      - name: Search Workspace for Coverage Files
+        run: find . -name "*.coverage" -o -name "*.xml"
         
       - name: Install Report Generator
         run: dotnet tool install -g dotnet-reportgenerator-globaltool --version 4.*
         
       - name: Generate Coverage Report
-        run: reportgenerator -reports:".\**\TestResults\**\coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
+        run: reportgenerator -reports:"${{ github.workspace }}/TestResults/**/*.cobertura.xml" -targetdir:"coverage" -reporttypes:Html
   
       - name: Upload test results
         uses: actions/upload-artifact@v4
