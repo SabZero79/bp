@@ -2,10 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ApplicationInsightsResourceId>/subscriptions/594a4331-8b41-4acb-b5ce-978e4e846834/resourceGroups/DefaultResourceGroup-NEU/providers/microsoft.insights/components/BPCalculator</ApplicationInsightsResourceId>
+    <UserSecretsId>c4d07af4-9e4b-4a6c-8535-bb5fce5228d9</UserSecretsId>
   </PropertyGroup>
 
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
   </ItemGroup>
   <ItemGroup>
