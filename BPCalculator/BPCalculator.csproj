@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ApplicationInsightsResourceId>/subscriptions/594a4331-8b41-4acb-b5ce-978e4e846834/resourceGroups/sabi_azure/providers/microsoft.insights/components/BPCalculator</ApplicationInsightsResourceId>
+    <UserSecretsId>ed72f8d6-2a1c-4f1c-949e-e359d34c4ebe</UserSecretsId>
   </PropertyGroup>
 
 
